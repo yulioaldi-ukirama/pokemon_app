@@ -12,4 +12,5 @@ Rails.application.routes.draw do
 
   post '/pokemons', to: 'pokemons#create', as: 'pokemon_create'
   patch '/pokemons/:pokemon_id', to: 'pokemons#update', as: 'pokemon_update'
+  delete '/pokemons/:pokemon_id', to: 'pokemons#destroy', as: 'pokemon_delete'
 end

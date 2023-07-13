@@ -29,7 +29,9 @@
   </table>
 
   <%= button_to "Edit", pokemon_edit_path(@pokemon), method: :get %>
+  <%= button_to "Delete", pokemon_delete_path(@pokemon), method: :delete, data: {confirm: 'Are you sure you want to delete a Pokemon named pokemon_name'} %>
 
-  <button>Delete</button>
   <button>Edit Moves</button>
+
+  <%= button_to "Back", pokemons_index_path, method: :get, class: "text-center" %>
 </div>

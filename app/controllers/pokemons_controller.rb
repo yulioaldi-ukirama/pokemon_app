@@ -31,6 +31,7 @@ class PokemonsController < ApplicationController
     @pokemon.stars = stars_counter(@pokemon.power)
 
     if @pokemon.save
+      flash[:success] = "Successfully created a pokemon."
       redirect_to pokemon_show_path(@pokemon)
     else
       flash[:alert] = "Error occurred while saving the Pokémon."
@@ -41,11 +42,25 @@ class PokemonsController < ApplicationController
   # PATCH/PUT /pokemons/:pokemon_id
   def update
     @pokemon = Pokemon.find(params[:pokemon_id])
-    
+
     if @pokemon.update(pokemon_params)
+      flash[:success] = "Successfully updated a pokemon."
       redirect_to pokemon_show_path(@pokemon)
     else
       flash[:alert] = "Error occurred while updating the Pokémon."
+      render :new
+    end
+  end
+
+  # DELETE /pokemons/:pokemon_id
+  def destroy
+    pokemon = Pokemon.find(params[:pokemon_id])
+
+    if pokemon.destroy
+      flash[:success] = "Successfully deleted a pokemon."
+      redirect_to pokemons_index_path
+    else
+      flash[:alert] = "Error occurred while deleting the Pokémon."
       render :new
     end
   end

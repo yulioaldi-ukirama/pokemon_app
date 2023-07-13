@@ -54,7 +54,8 @@
           <%= form.submit "Submit", class: "btn btn-lg btn-primary btn-block bg-secondary" %>
         </div>
       <% end %>
-      <%= link_to 'Cancel', pokemon_show_path, class: "text-center" %>
+      
+      <%= button_to "Cancel", pokemons_index_path, method: :get, class: "text-center" %>
     </div>
   </div>
 </div>
