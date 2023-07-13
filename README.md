@@ -1,24 +1,35 @@
-# README
+# Pokemon application
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is the pokemon's battles application developed with
+[*Ruby on Rails*]
+<!-- Learn Web Development with Rails*](https://www.railstutorial.org/) -->
+(6th Edition)
+by [Yulio Aldi Widargo](https://www.michaelhartl.com/).
 
-Things you may want to cover:
+## Getting started
 
-* Ruby version
+To get started with the app, clone the repo and then install the needed gems:
 
-* System dependencies
+```
+$ gem install bundler -v 2.2.17
+$ bundle _2.2.17_ config set --local without 'production'
+$ bundle _2.2.17_ install
+```
 
-* Configuration
+Next, migrate the database:
 
-* Database creation
+```
+$ rails db:migrate
+```
 
-* Database initialization
+Finally, run the test suite to verify that everything is working correctly:
 
-* How to run the test suite
+```
+$ rails test
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+If the test suite passes, you'll be ready to run the app in a local server:
 
-* Deployment instructions
-
-* ...
+```
+$ rails server
+```
