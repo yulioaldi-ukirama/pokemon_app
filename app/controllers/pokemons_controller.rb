@@ -1,5 +1,7 @@
 class PokemonsController < ApplicationController
   include PokemonsHelper
+
+
   # GET /pokemons
   def index
     @pokemons = Pokemon.all
@@ -15,8 +17,15 @@ class PokemonsController < ApplicationController
     @pokemon = Pokemon.new
   end
 
+  # GET /pokemons/:pokemon_id/edit
+  def edit
+    @pokemon = Pokemon.find(params[:pokemon_id])
+  end
+
+
   # POST /pokemons
   def create
+    # belum ada validasi data kosong
     @pokemon = Pokemon.new(pokemon_params)
     @pokemon.current_health_point = @pokemon.max_health_point if @pokemon.current_health_point.nil?
     @pokemon.stars = stars_counter(@pokemon.power)
@@ -25,6 +34,18 @@ class PokemonsController < ApplicationController
       redirect_to pokemon_show_path(@pokemon)
     else
       flash[:alert] = "Error occurred while saving the Pokémon."
+      render :new
+    end
+  end
+
+  # PATCH/PUT /pokemons/:pokemon_id
+  def update
+    @pokemon = Pokemon.find(params[:pokemon_id])
+    
+    if @pokemon.update(pokemon_params)
+      redirect_to pokemon_show_path(@pokemon)
+    else
+      flash[:alert] = "Error occurred while updating the Pokémon."
       render :new
     end
   end

@@ -28,7 +28,8 @@
     </tbody>
   </table>
 
-  <button>Edit</button>
+  <%= button_to "Edit", pokemon_edit_path(@pokemon), method: :get %>
+
   <button>Delete</button>
   <button>Edit Moves</button>
 </div>
