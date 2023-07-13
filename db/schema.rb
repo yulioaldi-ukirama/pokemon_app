@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_13_065954) do
+ActiveRecord::Schema.define(version: 2023_07_13_080953) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,13 +19,14 @@ ActiveRecord::Schema.define(version: 2023_07_13_065954) do
     t.string "name", null: false
     t.integer "stars", null: false
     t.integer "power", null: false
-    t.integer "health_point", null: false
+    t.integer "current_health_point", null: false
     t.integer "attack", null: false
     t.integer "defense", null: false
     t.integer "special_attack", null: false
     t.integer "special_defense", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "max_health_point"
   end
 
 end

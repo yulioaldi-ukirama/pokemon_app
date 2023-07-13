@@ -1,2 +1,34 @@
-<h1>Pokemons#show</h1>
-<p>Find me in app/views/pokemons/show.html.erb</p>
+<h1>Pokemon Detail</h1>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Current HP</th>
+        <th>Attack</th>
+        <th>Defense</th>
+        <th>Sp. Attack</th>
+        <th>Sp. Defense</th>
+        <th>Power</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+          <td><%= @pokemon.name %></td>
+          <td><%= @pokemon.current_health_point %>/<%= @pokemon.max_health_point %></td>
+          <td><%= @pokemon.attack %></td>
+          <td><%= @pokemon.defense %></td>
+          <td><%= @pokemon.special_attack %></td>
+          <td><%= @pokemon.special_defense %></td>
+          <td><%= @pokemon.power %></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <button>Edit</button>
+  <button>Delete</button>
+  <button>Edit Moves</button>
+</div>

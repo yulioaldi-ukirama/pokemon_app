@@ -1,2 +1,28 @@
-<h1>Pokemons#index</h1>
-<p>Find me in app/views/pokemons/index.html.erb</p>
+<h1>Pokemon List</h1>
+
+<button>Create New Pokemon</button>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Current HP</th>
+        <th>Stars</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @pokemons.each do |pokemon| %>
+        <tr>
+          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.id %></a></td>
+          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.name %></a></td>
+          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.current_health_point %>/<%= pokemon.max_health_point %></a></td>
+          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.stars %></a></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
