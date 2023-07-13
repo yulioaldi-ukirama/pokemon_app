@@ -1,2 +1,62 @@
-<h1>Pokemons#new</h1>
-<p>Find me in app/views/pokemons/new.html.erb</p>
+<h1>Create Pokemon</h1>
+
+<div class="container text-center">
+  <div class="row justify-content-center">
+    <div class="text-center col col-lg-7">
+      <%= form_with(model: @pokemon, url: pokemon_create_path) do |form| %>
+        <% if @pokemon.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+            <ul>
+              <% @pokemon.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= form.label :name, class: "sr-only" %>
+          <%= form.text_field :name, class: "form-control", placeholder: "Name" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :power, class: "sr-only" %>
+          <%= form.text_field :power, class: "form-control", placeholder: "Power" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :max_health_point, class: "sr-only" %>
+          <%= form.text_field :max_health_point, class: "form-control", placeholder: "Maximum Health Point" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :attack, class: "sr-only" %>
+          <%= form.text_field :attack, class: "form-control", placeholder: "Attack" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :defense, class: "sr-only" %>
+          <%= form.text_field :defense, class: "form-control", placeholder: "Defense" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :special_attack, class: "sr-only" %>
+          <%= form.text_field :special_attack, class: "form-control", placeholder: "Special Attack" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :special_defense, class: "sr-only" %>
+          <%= form.text_field :special_defense, class: "form-control", placeholder: "Special Defense" %>
+        </div>
+
+        <div class="actions">
+          <%= form.submit "Submit", class: "btn btn-lg btn-primary btn-block bg-secondary" %>
+        </div>
+      <% end %>
+      <%= link_to 'Cancel', pokemons_index_path, class: "text-center" %>
+    </div>
+  </div>
+</div>
+
