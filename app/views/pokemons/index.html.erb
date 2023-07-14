@@ -1,6 +1,6 @@
 <h1>Pokemon List</h1>
 
-<%= button_to "Create New Pokemon", pokemon_new_path, method: :get %>
+<%= button_to "Create New Pokemon", new_pokemon_path, method: :get %>
 
 <div class="table-responsive">
   <table class="table table-striped table-sm">
@@ -17,10 +17,10 @@
     <tbody>
       <% @pokemons.each do |pokemon| %>
         <tr>
-          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.id %></a></td>
-          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.name %></a></td>
-          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.current_health_point %>/<%= pokemon.max_health_point %></a></td>
-          <td><a href="<%= pokemon_show_path(pokemon) %>"><%= pokemon.stars %></a></td>
+          <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.id %></a></td>
+          <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.name %></a></td>
+          <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.current_health_point %>/<%= pokemon.max_health_point %></a></td>
+          <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.stars %></a></td>
         </tr>
       <% end %>
     </tbody>

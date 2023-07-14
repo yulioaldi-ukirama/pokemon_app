@@ -9,7 +9,7 @@ class PokemonsController < ApplicationController
 
   # GET /pokemons/:pokemon_id/show
   def show
-    @pokemon = Pokemon.find(params[:pokemon_id])
+    @pokemon = Pokemon.find(params[:id])
   end
 
   # GET /pokemons/new
@@ -19,7 +19,13 @@ class PokemonsController < ApplicationController
 
   # GET /pokemons/:pokemon_id/edit
   def edit
-    @pokemon = Pokemon.find(params[:pokemon_id])
+    @pokemon = Pokemon.find(params[:id])
+  end
+
+  # GET /pokemons/:pokemon_id/moves/select
+  def edit_moves
+    @pokemon = Pokemon.find(params[:id])
+    @moves = Move.all
   end
 
 
@@ -32,7 +38,7 @@ class PokemonsController < ApplicationController
 
     if @pokemon.save
       flash[:success] = "Successfully created a pokemon."
-      redirect_to pokemon_show_path(@pokemon)
+      redirect_to pokemon_path(@pokemon)
     else
       flash[:alert] = "Error occurred while saving the Pokémon."
       render :new
@@ -41,26 +47,39 @@ class PokemonsController < ApplicationController
 
   # PATCH/PUT /pokemons/:pokemon_id
   def update
-    @pokemon = Pokemon.find(params[:pokemon_id])
+    @pokemon = Pokemon.find(params[:id])
 
     if @pokemon.update(pokemon_params)
       flash[:success] = "Successfully updated a pokemon."
-      redirect_to pokemon_show_path(@pokemon)
+      redirect_to pokemon_path(@pokemon)
     else
       flash[:alert] = "Error occurred while updating the Pokémon."
-      render :new
+      render :edit
     end
   end
 
   # DELETE /pokemons/:pokemon_id
   def destroy
-    pokemon = Pokemon.find(params[:pokemon_id])
+    pokemon = Pokemon.find(params[:id])
 
     if pokemon.destroy
       flash[:success] = "Successfully deleted a pokemon."
-      redirect_to pokemons_index_path
+      redirect_to pokemons_path
     else
       flash[:alert] = "Error occurred while deleting the Pokémon."
+      render :show
+    end
+  end
+
+  # PATCH/PUT /pokemons/:pokemon_id/update_moves
+  def update_moves
+    @pokemon = Pokemon.find(params[:id])
+
+    if @pokemon.update(pokemon_params)
+      flash[:success] = "Successfully updated a pokemon."
+      redirect_to pokemon_path(@pokemon)
+    else
+      flash[:alert] = "Error occurred while updating the Pokémon."
       render :new
     end
   end
@@ -68,7 +87,7 @@ class PokemonsController < ApplicationController
   private
   # Use callbacks to share common setup or constrains between actions.
   def set_pokemon
-    @pokemon = Pokemon.find(params[:pokemon_id])
+    @pokemon = Pokemon.find(params[:id])
   end
 
   # Only allow a list of trusted parameters through.
