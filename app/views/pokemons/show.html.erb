@@ -27,9 +27,31 @@
         </tr>
     </tbody>
   </table>
-
-  <%= button_to "Edit", edit_pokemon_path(@pokemon), method: :get %>
-  <%= button_to "Delete", pokemon_path(@pokemon), method: :delete, data: {confirm: 'Are you sure you want to delete a Pokemon named pokemon_name?'} %>
-
-  <%= button_to "Back", pokemons_path, method: :get, class: "text-center" %>
 </div>
+
+<h3>Pokemon Moves</h3>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+          <%# <td><%= @pokemon.moves.id %></td> %>
+          <%# <td><%= @pokemon.moves.name %></td> %>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+<%= button_to "Edit", edit_pokemon_path(@pokemon), method: :get %>
+<%= button_to "Delete", pokemon_path(@pokemon), method: :delete, data: {confirm: 'Are you sure you want to delete a Pokemon named pokemon_name?'} %>
+<%= button_to "Edit Moves", pokemon_edit_moves_path(@pokemon), method: :get %>
+
+<%= button_to "Back", pokemons_path, method: :get, class: "text-center" %>

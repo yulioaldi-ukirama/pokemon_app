@@ -1,0 +1,43 @@
+<h1>Edit Moves</h1>
+
+<div class="container text-center">
+  <div class="row justify-content-center">
+    <div class="text-center col col-lg-7">
+      <h3>Pokemon Data</h3>
+      <p>ID:<%= @pokemon.id %></p>
+      <p>Name:<%= @pokemon.name %></p>
+      <p>Stars:<%= @pokemon.stars %></p>
+      
+      <h3>Moves Data</h3>
+      <%= form_with(model: @move, url: pokemon_update_moves_path(@pokemon, @moves), method: :post) do |form| %>
+        <% if @pokemon.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
+            <ul>
+              <% @pokemon.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= form.label :move_ids, "Select Move 1", class: "sr-only" %>
+          <%= form.collection_select :move_ids, @moves, :id, :name, {}, class: "form-control", placeholder: "Name" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :move_ids, "Select Move 2", class: "sr-only" %>
+          <%= form.select :move_ids, options_for_select(Move.all.map { |move| [move.name, move.id] }, @pokemon.move_ids), {}, class: "form-control", placeholder: "Name" %>
+        </div>
+
+        <div class="actions">
+          <%= form.submit "Submit", class: "btn btn-lg btn-primary btn-block bg-secondary" %>
+        </div>
+      <% end %>
+      
+      <%= button_to "Cancel", pokemon_path(@pokemon), method: :get, class: "text-center" %>
+    </div>
+  </div>
+</div>
+

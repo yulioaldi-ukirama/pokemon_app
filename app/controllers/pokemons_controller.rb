@@ -10,6 +10,7 @@ class PokemonsController < ApplicationController
   # GET /pokemons/:pokemon_id/show
   def show
     @pokemon = Pokemon.find(params[:id])
+    @moves = @pokemon.moves
   end
 
   # GET /pokemons/new
@@ -22,7 +23,7 @@ class PokemonsController < ApplicationController
     @pokemon = Pokemon.find(params[:id])
   end
 
-  # GET /pokemons/:pokemon_id/moves/select
+  # GET /pokemons/:pokemon_id/edit_moves
   def edit_moves
     @pokemon = Pokemon.find(params[:id])
     @moves = Move.all
@@ -38,7 +39,7 @@ class PokemonsController < ApplicationController
 
     if @pokemon.save
       flash[:success] = "Successfully created a pokemon."
-      redirect_to pokemon_path(@pokemon)
+      redirect_to pokemon_edit_moves_path(@pokemon)
     else
       flash[:alert] = "Error occurred while saving the Pokémon."
       render :new
@@ -71,16 +72,23 @@ class PokemonsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /pokemons/:pokemon_id/update_moves
+  # POST /pokemons/:pokemon_id/update_moves
   def update_moves
     @pokemon = Pokemon.find(params[:id])
+    @moves = Move.where(id: moves_params)
 
-    if @pokemon.update(pokemon_params)
-      flash[:success] = "Successfully updated a pokemon."
-      redirect_to pokemon_path(@pokemon)
+    puts params
+    puts params[:moves_ids]
+
+    # render :edit_moves
+
+    if @moves.any?
+      @pokemon.moves << @moves
+  
+      redirect_to pokemon_path(@pokemon), notice: "Moves were successfully added to the Pokemon."
     else
-      flash[:alert] = "Error occurred while updating the Pokémon."
-      render :new
+      flash[:alert] = "No moves were selected."
+      render :edit_moves
     end
   end
 
@@ -93,5 +101,9 @@ class PokemonsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def pokemon_params
     params.require(:pokemon).permit(:name, :power, :current_health_point, :max_health_point, :attack, :defense, :special_attack, :special_defense)
+  end
+  
+  def moves_params
+    params.require(:move).permit(:move_ids)
   end
 end
