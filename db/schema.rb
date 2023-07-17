@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_17_012154) do
+ActiveRecord::Schema.define(version: 2023_07_17_024835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 2023_07_17_012154) do
   create_table "moves_pokemons", id: false, force: :cascade do |t|
     t.bigint "pokemon_id", null: false
     t.bigint "move_id", null: false
+    t.integer "current_power_points"
   end
 
   create_table "pokemons", force: :cascade do |t|

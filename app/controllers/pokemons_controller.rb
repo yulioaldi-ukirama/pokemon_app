@@ -74,16 +74,25 @@ class PokemonsController < ApplicationController
   # POST /pokemons/:pokemon_id/update_moves
   def update_moves
     @pokemon = Pokemon.find(params[:id])
-    @moves = Move.where(id: moves_params)
+    # @moves = Move.where(id: moves_params)
 
-    puts params
-    puts params[:moves_ids]
+    # puts params
+    # puts params[:moves_ids]
 
-    # render :edit_moves
+    # # render :edit_moves
 
-    if @moves.any?
-      @pokemon.moves << @moves
+    # if @moves.any?
+    #   @pokemon.moves << @moves
   
+    #   redirect_to pokemon_path(@pokemon), notice: "Moves were successfully added to the Pokemon."
+    # else
+    #   flash[:alert] = "No moves were selected."
+    #   render :edit_moves
+    # end
+
+    @pokemon.move_ids = params[:pokemon][:move_ids]
+
+    if @pokemon.save
       redirect_to pokemon_path(@pokemon), notice: "Moves were successfully added to the Pokemon."
     else
       flash[:alert] = "No moves were selected."

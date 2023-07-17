@@ -18,4 +18,6 @@ Rails.application.routes.draw do
   get '/pokemons/:id/edit_moves', to: 'pokemons#edit_moves', as: 'pokemon_edit_moves'
 
   post '/pokemons/:id/update_moves', to: 'pokemons#update_moves', as: 'pokemon_update_moves'
+
+  # Battles
 end

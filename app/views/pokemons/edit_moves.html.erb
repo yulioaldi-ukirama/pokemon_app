@@ -8,7 +8,7 @@
       <p>Name:<%= @pokemon.name %></p>
       
       <h3>Moves Data</h3>
-      <%= form_with(model: @move, url: pokemon_update_moves_path(@pokemon, @moves), method: :post) do |form| %>
+      <%= form_with(model: @pokemon, url: pokemon_update_moves_path(@pokemon), method: :post) do |form| %>
         <% if @pokemon.errors.any? %>
           <div id="error_explanation">
             <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
@@ -21,13 +21,10 @@
         <% end %>
 
         <div class="field">
-          <%= form.label :move_ids, "Select Move 1", class: "sr-only" %>
-          <%= form.collection_select :move_ids, @moves, :id, :name, {}, class: "form-control", placeholder: "Name" %>
-        </div>
-
-        <div class="field">
-          <%= form.label :move_ids, "Select Move 2", class: "sr-only" %>
-          <%= form.select :move_ids, options_for_select(Move.all.map { |move| [move.name, move.id] }, @pokemon.move_ids), {}, class: "form-control", placeholder: "Name" %>
+          <%= form.label :move_ids, "Select Moves:", class: "sr-only" %> <br>
+          <%= form.collection_check_boxes(:move_ids, @moves, :id, :name) do |b| %>
+            <%= b.check_box + b.label %><br>
+          <% end %>
         </div>
 
         <div class="actions">
