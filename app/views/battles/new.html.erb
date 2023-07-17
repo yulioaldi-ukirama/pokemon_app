@@ -1,0 +1,34 @@
+<h1>Create Battle</h1>
+
+<div class="container text-center">
+  <div class="row justify-content-center">
+    <div class="text-center col col-lg-7">
+      <%= form_with(model: @battle, url: battles_path, method: :post) do |form| %>
+        <% if @battle.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@battle.errors.count, "error") %> prohibited this battle from being saved:</h2>
+            <ul>
+              <% @battle.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= form.label :move_ids, "Select Types:", class: "sr-only" %> <br>
+          <%= form.collection_check_boxes(:pokemon_ids, @pokemons, :id, :name) do |b| %>
+            <%= b.check_box + b.label %><br>
+          <% end %>
+        </div>
+
+        <div class="actions">
+          <%= form.submit "Submit", class: "btn btn-lg btn-primary btn-block bg-secondary" %>
+        </div>
+      <% end %>
+
+      <%= button_to "Cancel", battles_path, method: :get, class: "text-center" %>
+    </div>
+  </div>
+</div>
+

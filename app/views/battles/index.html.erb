@@ -10,6 +10,8 @@
         <th>Pokemon 1</th>
         <th>VS</th>
         <th>Pokemon 2</th>
+        <th>Turn</th>
+        <th>Status</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -18,8 +20,11 @@
       <% @battles.each do |battle| %>
         <tr>
           <td><a href="<%= battle_path(battle) %>"><%= battle.id %></a></td>
-          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemon %></a></td>
-          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemon %></a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemons[0].name %></a></td>
+          <td><a href="<%= battle_path(battle) %>">Versus</a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemons[1].name %></a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= battle.turn %></a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= battle.status %></a></td>
         </tr>
       <% end %>
     </tbody>

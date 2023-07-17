@@ -44,8 +44,6 @@ class PokemonsController < ApplicationController
     @pokemon.current_health_point = @pokemon.max_health_point if @pokemon.current_health_point.nil?
 
     if @pokemon.save
-      @pokemon.type_ids = params[:pokemon][:type_ids]
-
       flash[:success] = "Successfully created a pokemon."
       redirect_to pokemon_edit_types_path(@pokemon)
     else
@@ -105,6 +103,7 @@ class PokemonsController < ApplicationController
       render :edit_moves
     end
   end
+
 
   private
   # Use callbacks to share common setup or constrains between actions.
