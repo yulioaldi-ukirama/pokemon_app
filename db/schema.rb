@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_17_024835) do
+ActiveRecord::Schema.define(version: 2023_07_17_035326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,9 +32,9 @@ ActiveRecord::Schema.define(version: 2023_07_17_024835) do
 
   create_table "battles", force: :cascade do |t|
     t.integer "turn", null: false
-    t.boolean "is_complete", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "status"
   end
 
   create_table "moves", force: :cascade do |t|
@@ -64,6 +64,11 @@ ActiveRecord::Schema.define(version: 2023_07_17_024835) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "max_health_point"
+  end
+
+  create_table "pokemons_types", id: false, force: :cascade do |t|
+    t.bigint "pokemon_id", null: false
+    t.bigint "type_id", null: false
   end
 
   create_table "types", force: :cascade do |t|
