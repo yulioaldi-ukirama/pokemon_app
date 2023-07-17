@@ -35,7 +35,6 @@ class PokemonsController < ApplicationController
     # belum ada validasi data kosong
     @pokemon = Pokemon.new(pokemon_params)
     @pokemon.current_health_point = @pokemon.max_health_point if @pokemon.current_health_point.nil?
-    @pokemon.stars = stars_counter(@pokemon.power)
 
     if @pokemon.save
       flash[:success] = "Successfully created a pokemon."
@@ -100,7 +99,7 @@ class PokemonsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def pokemon_params
-    params.require(:pokemon).permit(:name, :power, :current_health_point, :max_health_point, :attack, :defense, :special_attack, :special_defense)
+    params.require(:pokemon).permit(:name, :current_health_point, :max_health_point, :attack, :defense, :special_attack, :special_defense)
   end
   
   def moves_params

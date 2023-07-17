@@ -6,7 +6,6 @@
       <h3>Pokemon Data</h3>
       <p>ID:<%= @pokemon.id %></p>
       <p>Name:<%= @pokemon.name %></p>
-      <p>Stars:<%= @pokemon.stars %></p>
       
       <h3>Moves Data</h3>
       <%= form_with(model: @move, url: pokemon_update_moves_path(@pokemon, @moves), method: :post) do |form| %>

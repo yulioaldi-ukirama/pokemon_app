@@ -1,0 +1,2 @@
+class BattleStat < ApplicationRecord
+end

@@ -10,15 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_14_012613) do
+ActiveRecord::Schema.define(version: 2023_07_17_012154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "battle_stats", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "stars", null: false
+    t.integer "power", null: false
+    t.integer "current_health_point", null: false
+    t.integer "max_health_point", null: false
+    t.integer "attack", null: false
+    t.integer "defense", null: false
+    t.integer "special_attack", null: false
+    t.integer "special_defense", null: false
+    t.boolean "is_winner", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "battles", force: :cascade do |t|
+    t.integer "turn", null: false
+    t.boolean "is_complete", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "moves", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "power"
+    t.string "category"
+    t.integer "power_points"
+    t.bigint "type_id", null: false
+    t.index ["type_id"], name: "index_moves_on_type_id"
   end
 
   create_table "moves_pokemons", id: false, force: :cascade do |t|
@@ -28,8 +55,6 @@ ActiveRecord::Schema.define(version: 2023_07_14_012613) do
 
   create_table "pokemons", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "stars", null: false
-    t.integer "power", null: false
     t.integer "current_health_point", null: false
     t.integer "attack", null: false
     t.integer "defense", null: false
@@ -40,4 +65,11 @@ ActiveRecord::Schema.define(version: 2023_07_14_012613) do
     t.integer "max_health_point"
   end
 
+  create_table "types", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  add_foreign_key "moves", "types"
 end
