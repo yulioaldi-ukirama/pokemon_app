@@ -10,6 +10,7 @@ class PokemonsController < ApplicationController
   # GET /pokemons/:pokemon_id/show
   def show
     @pokemon = Pokemon.find(params[:id])
+    @types = @pokemon.types
     @moves = @pokemon.moves
   end
 
@@ -21,6 +22,12 @@ class PokemonsController < ApplicationController
   # GET /pokemons/:pokemon_id/edit
   def edit
     @pokemon = Pokemon.find(params[:id])
+  end
+
+  # GET /pokemons/:pokemon_id/edit_types
+  def edit_types
+    @pokemon = Pokemon.find(params[:id])
+    @types = Type.all
   end
 
   # GET /pokemons/:pokemon_id/edit_moves
@@ -37,8 +44,10 @@ class PokemonsController < ApplicationController
     @pokemon.current_health_point = @pokemon.max_health_point if @pokemon.current_health_point.nil?
 
     if @pokemon.save
+      @pokemon.type_ids = params[:pokemon][:type_ids]
+
       flash[:success] = "Successfully created a pokemon."
-      redirect_to pokemon_edit_moves_path(@pokemon)
+      redirect_to pokemon_edit_types_path(@pokemon)
     else
       flash[:alert] = "Error occurred while saving the Pokémon."
       render :new
@@ -71,25 +80,22 @@ class PokemonsController < ApplicationController
     end
   end
 
+  # POST /pokemons/:pokemon_id/update_types
+  def update_types
+    @pokemon = Pokemon.find(params[:id])
+    @pokemon.type_ids = params[:pokemon][:type_ids]
+
+    if @pokemon.save
+      redirect_to pokemon_edit_moves_path(@pokemon), notice: "Types were successfully added to the Pokemon."
+    else
+      flash[:alert] = "No moves were selected."
+      render :edit_moves
+    end
+  end
+
   # POST /pokemons/:pokemon_id/update_moves
   def update_moves
     @pokemon = Pokemon.find(params[:id])
-    # @moves = Move.where(id: moves_params)
-
-    # puts params
-    # puts params[:moves_ids]
-
-    # # render :edit_moves
-
-    # if @moves.any?
-    #   @pokemon.moves << @moves
-  
-    #   redirect_to pokemon_path(@pokemon), notice: "Moves were successfully added to the Pokemon."
-    # else
-    #   flash[:alert] = "No moves were selected."
-    #   render :edit_moves
-    # end
-
     @pokemon.move_ids = params[:pokemon][:move_ids]
 
     if @pokemon.save
@@ -113,5 +119,9 @@ class PokemonsController < ApplicationController
   
   def moves_params
     params.require(:move).permit(:move_ids)
+  end
+
+  def types_params
+    params.require(:type).permit(:type_ids)
   end
 end

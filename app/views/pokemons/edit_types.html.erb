@@ -1,0 +1,39 @@
+<h1>Edit Types</h1>
+
+<div class="container text-center">
+  <div class="row justify-content-center">
+    <div class="text-center col col-lg-7">
+      <h3>Pokemon Data</h3>
+      <p>ID:<%= @pokemon.id %></p>
+      <p>Name:<%= @pokemon.name %></p>
+      
+      <h3>Types Data</h3>
+      <%= form_with(model: @pokemon, url: pokemon_update_types_path(@pokemon), method: :post) do |form| %>
+        <% if @pokemon.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
+            <ul>
+              <% @pokemon.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= form.label :move_ids, "Select Types:", class: "sr-only" %> <br>
+          <%= form.collection_check_boxes(:type_ids, @types, :id, :name) do |b| %>
+            <%= b.check_box + b.label %><br>
+          <% end %>
+        </div>
+
+        <div class="actions">
+          <%= form.submit "Next", class: "btn btn-lg btn-primary btn-block bg-secondary" %>
+        </div>
+      <% end %>
+      
+      <%= button_to "Cancel", pokemon_path(@pokemon), method: :get, class: "text-center" %>
+    </div>
+  </div>
+</div>
+

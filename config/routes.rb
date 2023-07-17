@@ -15,8 +15,10 @@ Rails.application.routes.draw do
   # patch '/pokemons/:id', to: 'pokemons#update', as: 'pokemon_update'
   # delete '/pokemons/:id', to: 'pokemons#destroy', as: 'pokemon_delete'
   
+  get '/pokemons/:id/edit_types', to: 'pokemons#edit_types', as: 'pokemon_edit_types'
   get '/pokemons/:id/edit_moves', to: 'pokemons#edit_moves', as: 'pokemon_edit_moves'
 
+  post '/pokemons/:id/update_types', to: 'pokemons#update_types', as: 'pokemon_update_types'
   post '/pokemons/:id/update_moves', to: 'pokemons#update_moves', as: 'pokemon_update_moves'
 
   # Battles
