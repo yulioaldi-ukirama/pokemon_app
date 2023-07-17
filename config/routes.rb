@@ -22,4 +22,5 @@ Rails.application.routes.draw do
   post '/pokemons/:id/update_moves', to: 'pokemons#update_moves', as: 'pokemon_update_moves'
 
   # Battles
+  resources :battles
 end
