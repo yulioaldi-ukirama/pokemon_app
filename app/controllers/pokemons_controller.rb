@@ -84,7 +84,8 @@ class PokemonsController < ApplicationController
     @pokemon.type_ids = params[:pokemon][:type_ids]
 
     if @pokemon.save
-      redirect_to pokemon_edit_moves_path(@pokemon), notice: "Types were successfully added to the Pokemon."
+      flash[:success] = "Types were successfully added to the Pokemon."
+      redirect_to pokemon_edit_moves_path(@pokemon)
     else
       flash[:alert] = "No moves were selected."
       render :edit_moves
@@ -96,18 +97,9 @@ class PokemonsController < ApplicationController
     @pokemon = Pokemon.find(params[:id])
     @pokemon.move_ids = params[:pokemon][:move_ids]
 
-    # @moves_pokemons = MovesPokemon.
-
-    # @moves = Move.find(@pokemon.move_ids)
-
-    # @moves.each do |move|
-    #   move.moves_pokemons.each do 
-    # end
-
-    # s
-
     if @pokemon.save
-      redirect_to pokemon_path(@pokemon), notice: "Moves were successfully added to the Pokemon."
+      flash[:success] = "Moves were successfully added to the Pokemon."
+      redirect_to pokemon_path(@pokemon)
     else
       flash[:alert] = "No moves were selected."
       render :edit_moves

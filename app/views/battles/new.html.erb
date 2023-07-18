@@ -16,14 +16,14 @@
         <% end %>
 
         <div class="field">
-          <%= form.label :move_ids, "Select Types:", class: "sr-only" %> <br>
+          <%= form.label :move_ids, "Select 2 pokemons:", class: "sr-only" %> <br>
           <%= form.collection_check_boxes(:pokemon_ids, @pokemons, :id, :name) do |b| %>
             <%= b.check_box + b.label %><br>
           <% end %>
         </div>
 
         <div class="actions">
-          <%= form.submit "Submit", class: "btn btn-lg btn-primary btn-block bg-secondary" %>
+          <%= form.submit "Submit", class: "btn btn-lg btn-primary btn-block bg-secondary m-3" %>
         </div>
       <% end %>
 
