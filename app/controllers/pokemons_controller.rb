@@ -98,6 +98,14 @@ class PokemonsController < ApplicationController
     @pokemon.move_ids = params[:pokemon][:move_ids]
 
     if @pokemon.save
+      @pokemon.moves_pokemons.each do |moves_pokemon|
+        if moves_pokemon.current_power_points.nil?
+          move = Move.find(moves_pokemon.move_id)
+          moves_pokemon.current_power_points = move.power_points
+          moves_pokemon.save
+        end
+      end
+
       flash[:success] = "Moves were successfully added to the Pokemon."
       redirect_to pokemon_path(@pokemon)
     else

@@ -13,4 +13,13 @@ class Pokemon < ApplicationRecord
 
   has_many :types_pokemons, dependent: :delete_all
   has_many :types, through: :types_pokemons
+
+  # Callbacks
+  # after_save: set_default_value_of_current_power_points_on_moves_pokemons
+
+  # private
+
+  # def set_default_value_of_current_power_points_on_moves_pokemons
+
+  # end
 end
