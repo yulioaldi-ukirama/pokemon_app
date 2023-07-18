@@ -2,7 +2,7 @@ class Pokemon < ApplicationRecord
   # Validations
 
   # Relations
-  has_and_belongs_to_many :types
+  # has_and_belongs_to_many :types
   # has_and_belongs_to_many :battles
 
   has_many :moves_pokemons, dependent: :delete_all
@@ -10,4 +10,7 @@ class Pokemon < ApplicationRecord
 
   has_many :battles_pokemons, dependent: :delete_all
   has_many :battles, through: :battles_pokemons
+
+  has_many :types_pokemons, dependent: :delete_all
+  has_many :types, through: :types_pokemons
 end

@@ -96,6 +96,16 @@ class PokemonsController < ApplicationController
     @pokemon = Pokemon.find(params[:id])
     @pokemon.move_ids = params[:pokemon][:move_ids]
 
+    # @moves_pokemons = MovesPokemon.
+
+    # @moves = Move.find(@pokemon.move_ids)
+
+    # @moves.each do |move|
+    #   move.moves_pokemons.each do 
+    # end
+
+    # s
+
     if @pokemon.save
       redirect_to pokemon_path(@pokemon), notice: "Moves were successfully added to the Pokemon."
     else
