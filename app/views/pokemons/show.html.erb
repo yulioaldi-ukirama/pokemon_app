@@ -71,10 +71,11 @@
 
     <tbody>
       <% @moves.each do |move| %>
+        <% pokemons_move = @pokemon.moves_pokemons.find_by(move_id: move.id) %>
         <tr>
           <td><a href="#"><%= move.id %></a></td>
           <td><a href="#"><%= move.name %></a></td>
-          <td><a href="#"><%= move.power_points %></a></td>
+          <td><a href="#"><%= pokemons_move.current_power_points ? pokemons_move.current_power_points : move.power_points %>/<%= move.power_points %></a></td>
         </tr>
       <% end %>
     </tbody>

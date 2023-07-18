@@ -6,20 +6,7 @@ class BattlesController < ApplicationController
 
   # GET /battles/:battle_id/show
   def show
-    @battle = Battle.find(params[:id])
-    @pokemons = @battle.pokemons
-
-    @pokemon1 = @pokemons[0]
-    @pokemon2 = @pokemons[1]
-    
-    @types_pokemon1 = @pokemon1.types
-    @types_pokemon2 = @pokemon2.types
-
-    @moves_pokemon1 = @pokemon1.moves
-    @moves_pokemon2 = @pokemon2.moves
-
-    @pokemons_moves_a = @pokemon1.moves_pokemons
-    @pokemons_moves_b = @pokemon2.moves_pokemons
+    set_battle
 
     @result = "Pertarungan sedang berlangsung"
     @turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
@@ -52,20 +39,7 @@ class BattlesController < ApplicationController
 
   # POST /battles/:battle_id/move
   def move
-    @battle = Battle.find(params[:id])
-    @pokemons = @battle.pokemons
-
-    @pokemon1 = @pokemons[0]
-    @pokemon2 = @pokemons[1]
-
-    @types_pokemon1 = @pokemon1.types
-    @types_pokemon2 = @pokemon2.types
-
-    @moves_pokemon1 = @pokemon1.moves
-    @moves_pokemon2 = @pokemon2.moves
-
-    @pokemons_moves_a = @pokemon1.moves_pokemons
-    @pokemons_moves_b = @pokemon2.moves_pokemons
+    set_battle
 
     @attacker = Pokemon.find(params[:attacker_id])
     @defender = Pokemon.find(params[:defender_id])
@@ -84,12 +58,8 @@ class BattlesController < ApplicationController
     
     @move.current_power_points -= 1
     
-    # @sampe_sini = "sampe sini coyy #{@battle.turn}"
-    
     @move.save
     @battle.save
-
-    # ///////////////////////////////
 
     @attacker_level = @attacker.level
     @attacker_move_power = attacker_move.power
@@ -102,30 +72,48 @@ class BattlesController < ApplicationController
       @STAB = 1
     end
 
-    @step1 = 2 * @attacker_level / 5 + 2
-    @step2 = @step1 * @attacker_move_power * @attacker_attack_stat / @defender_defense_stat
-    @step3 = @step2 / 50 + 2
-    @step4 = @step3 * @STAB
-    @damage = @step4.floor
+    damage_calculation
 
     @defender.current_health_point -= @damage
     @defender.save
 
-    # swswxx===/\[]
-
-    # ///////////////////////////////
-
     @result = "#{@attacker.name} menyerang #{@defender.name} dengan #{attacker_move.name}."
     @turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
 
-    render :show
+    redirect_to battle_path
   end
 
 
   private
   # Use callbacks to share common setup or constrains between actions.
   def set_battle
-    @battle = Battle.find(param[:id])
+    @battle = Battle.find(params[:id])
+
+    set_pokemons_on_battle
+  end
+
+  def set_pokemons_on_battle
+    @pokemons = @battle.pokemons
+
+    @pokemon1 = @pokemons.order(:created_at).first
+    @pokemon2 = @pokemons.order(created_at: :desc).first
+
+    @types_pokemon1 = @pokemon1.types
+    @types_pokemon2 = @pokemon2.types
+
+    @moves_pokemon1 = @pokemon1.moves
+    @moves_pokemon2 = @pokemon2.moves
+
+    @pokemons_moves_a = @pokemon1.moves_pokemons
+    @pokemons_moves_b = @pokemon2.moves_pokemons
+  end
+
+  def damage_calculation
+    @step1 = 2 * @attacker_level / 5 + 2
+    @step2 = @step1 * @attacker_move_power * @attacker_attack_stat / @defender_defense_stat
+    @step3 = @step2 / 50 + 2
+    @step4 = @step3 * @STAB
+    @damage = @step4.floor
   end
 
   # Only allow a list of trusted parameters through.
