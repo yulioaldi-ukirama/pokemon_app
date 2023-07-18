@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_17_042839) do
+ActiveRecord::Schema.define(version: 2023_07_18_020015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,9 +37,13 @@ ActiveRecord::Schema.define(version: 2023_07_17_042839) do
     t.string "status"
   end
 
-  create_table "battles_pokemons", id: false, force: :cascade do |t|
-    t.bigint "pokemon_id", null: false
+  create_table "battles_pokemons", force: :cascade do |t|
     t.bigint "battle_id", null: false
+    t.bigint "pokemon_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["battle_id"], name: "index_battles_pokemons_on_battle_id"
+    t.index ["pokemon_id"], name: "index_battles_pokemons_on_pokemon_id"
   end
 
   create_table "moves", force: :cascade do |t|
@@ -53,10 +57,14 @@ ActiveRecord::Schema.define(version: 2023_07_17_042839) do
     t.index ["type_id"], name: "index_moves_on_type_id"
   end
 
-  create_table "moves_pokemons", id: false, force: :cascade do |t|
+  create_table "moves_pokemons", force: :cascade do |t|
     t.bigint "pokemon_id", null: false
     t.bigint "move_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.integer "current_power_points"
+    t.index ["move_id"], name: "index_moves_pokemons_on_move_id"
+    t.index ["pokemon_id"], name: "index_moves_pokemons_on_pokemon_id"
   end
 
   create_table "pokemons", force: :cascade do |t|
@@ -82,5 +90,9 @@ ActiveRecord::Schema.define(version: 2023_07_17_042839) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "battles_pokemons", "battles"
+  add_foreign_key "battles_pokemons", "pokemons"
   add_foreign_key "moves", "types"
+  add_foreign_key "moves_pokemons", "moves"
+  add_foreign_key "moves_pokemons", "pokemons"
 end

@@ -1,0 +1,189 @@
+<h1>Battle Detail</h1>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Turn</th>
+        <th>Status</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+          <td><%= @battle.id %></td>
+          <td><%= @battle.turn %></td>
+          <td><%= @battle.status %></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+<h1>Pokemon 1 Detail</h1>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Current HP</th>
+        <th>Attack</th>
+        <th>Defense</th>
+        <th>Sp. Attack</th>
+        <th>Sp. Defense</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+          <td><%= @pokemons[0].name %></td>
+          <td><%= @pokemons[0].current_health_point %>/<%= @pokemons[0].max_health_point %></td>
+          <td><%= @pokemons[0].attack %></td>
+          <td><%= @pokemons[0].defense %></td>
+          <td><%= @pokemons[0].special_attack %></td>
+          <td><%= @pokemons[0].special_defense %></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Pokemon Types</h3>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th></th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+
+    <tbody>
+      <% @types_pokemon1.each do |type| %>
+        <tr>
+          <td><a href="#"><%= type.id %></a></td>
+          <td><a href="#"><%= type.name %></a></td>
+        </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+</div>
+
+<h3>Pokemon Moves</h3>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Power Points</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+
+    <tbody>
+      <% @moves_pokemon1.each do |move| %>
+        <% pokemons_move = @pokemons_moves_a.find_by(move.id) %>
+        <tr>
+          <td><a href="#"><%= move.id %></a></td>
+          <td><a href="#"><%= move.name %></a></td>
+          <td><a href="#"><%= pokemons_move ? pokemons_move.current_power_points : move.power_points %>/<%= move.power_points %></a></td>
+        </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+</div>
+
+<h1>Pokemon 2 Detail</h1>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Current HP</th>
+        <th>Attack</th>
+        <th>Defense</th>
+        <th>Sp. Attack</th>
+        <th>Sp. Defense</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+          <td><%= @pokemons[1].name %></td>
+          <td><%= @pokemons[1].current_health_point %>/<%= @pokemons[1].max_health_point %></td>
+          <td><%= @pokemons[1].attack %></td>
+          <td><%= @pokemons[1].defense %></td>
+          <td><%= @pokemons[1].special_attack %></td>
+          <td><%= @pokemons[1].special_defense %></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Pokemon Types</h3>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th></th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+
+    <tbody>
+      <% @types_pokemon2.each do |type| %>
+        <tr>
+          <td><a href="#"><%= type.id %></a></td>
+          <td><a href="#"><%= type.name %></a></td>
+        </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+</div>
+
+<h3>Pokemon Moves</h3>
+
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Power Points</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+
+    <tbody>
+      <% @moves_pokemon2.each do |move| %>
+        <tr>
+          <td><a href="#"><%= move.id %></a></td>
+          <td><a href="#"><%= move.name %></a></td>
+          <td><a href="#"><%= move.power_points %></a></td>
+        </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+</div>
+
+<%= button_to "Back", pokemons_path, method: :get, class: "text-center" %>

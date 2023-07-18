@@ -7,7 +7,16 @@ class BattlesController < ApplicationController
   # GET /battles/:battle_id/show
   def show
     @battle = Battle.find(params[:id])
-    @pokemon = @battle.pokemon
+    @pokemons = @battle.pokemons
+    
+    @types_pokemon1 = @pokemons[0].types
+    @types_pokemon2 = @pokemons[1].types
+
+    @moves_pokemon1 = @pokemons[0].moves
+    @moves_pokemon2 = @pokemons[1].moves
+
+    @pokemons_moves_a = @pokemons[0].moves_pokemons
+    @pokemons_moves_b = @pokemons[1].moves_pokemons
   end
 
   # GET /battles/new
@@ -16,7 +25,6 @@ class BattlesController < ApplicationController
     @pokemons = Pokemon.all
   end
 
-  # GET /battles/:battle_id/edit
   
   # POST /battles
   def create
