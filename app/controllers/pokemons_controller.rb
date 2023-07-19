@@ -69,8 +69,6 @@ class PokemonsController < ApplicationController
   def destroy
     pokemon = Pokemon.find(params[:id])
 
-    # puts sqew
-
     if pokemon.battles.ids.length != 0
       flash[:danger] =  "The registered Pokémon in a battle cannot be deleted!"
       redirect_to pokemon_path
@@ -83,7 +81,6 @@ class PokemonsController < ApplicationController
         render :show
       end
     end
-
   end
 
   # POST /pokemons/:pokemon_id/update_types

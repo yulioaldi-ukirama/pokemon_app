@@ -22,17 +22,39 @@ class BattlesController < ApplicationController
   # POST /battles
   def create
     @battle = Battle.new(battle_params)
-    @battle.pokemon_ids = params[:battle][:pokemon_ids]
-
-    @battle.turn = 0
-    @battle.status = "Not Started"
-
-    if @battle.save
-      flash[:success] = "Successfully created a Battle."
-      redirect_to battles_path
+    pokemon_ids = params[:battle][:pokemon_ids]
+    
+    if pokemon_ids.length != 3
+      flash[:danger] = "You must select 2 Pokémons to create a battle!"
+      redirect_to new_battle_path
     else
-      flash[:alert] = "Error occurred while saving the Battle."
-      render :new
+      @battle.pokemon_ids = pokemon_ids
+      
+      # puts dhyi
+
+      is_death = false
+
+      @battle.pokemons.each do |pokemon|
+        if pokemon.current_health_point < 1
+          is_death = true
+        end
+      end
+      
+      if is_death
+        flash[:danger] = "You must select 2 Pokemons with current HP greater than 0 point!"
+        redirect_to new_battle_path
+      else
+        @battle.turn = 0
+        @battle.status = "Not Started"
+    
+        if @battle.save
+          flash[:success] = "Successfully created a Battle."
+          redirect_to battles_path
+        else
+          flash[:alert] = "Error occurred while saving the Battle."
+          render :new
+        end
+      end
     end
   end
 
