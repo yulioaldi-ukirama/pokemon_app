@@ -91,42 +91,51 @@ class BattlesController < ApplicationController
 
     # puts dkdeo
 
-
-    # if @move.current_power_points.nil?
-    #   @move.current_power_points = attacker_move.power_points
-    # end
-    
-    # @move.current_power_points -= 1
-    attacker_moves_pokemon.current_power_points -= 1
-    
-    # @move.save
-    attacker_moves_pokemon.save
-    @battle.save
-
-    # Calculation
-    @attacker_level = @attacker.level
-    @attacker_move_power = attacker_move.power
-    @attacker_attack_stat = @attacker.attack
-    @defender_defense_stat = @defender.defense
-    @type1 = 1
-    @type2 = 1
-    @random = 1
-
-    if @attacker.types.any? { |type| type.id == attacker_move.type_id }
-      @STAB = 1.5
+    if attacker_moves_pokemon.current_power_points <= 0
+      if attacker_moves_pokemon.current_power_points < 0
+        attacker_moves_pokemon.current_power_points = 0
+        attacker_moves_pokemon.save
+      end
+      
+      flash[:danger] = "Can't use a move with 0 power points!"
+      redirect_to battle_path
     else
-      @STAB = 1
+      # if @move.current_power_points.nil?
+      #   @move.current_power_points = attacker_move.power_points
+      # end
+      
+      # @move.current_power_points -= 1
+      attacker_moves_pokemon.current_power_points -= 1
+      
+      # @move.save
+      attacker_moves_pokemon.save
+      @battle.save
+  
+      # Calculation
+      @attacker_level = @attacker.level
+      @attacker_move_power = attacker_move.power
+      @attacker_attack_stat = @attacker.attack
+      @defender_defense_stat = @defender.defense
+      @type1 = 1
+      @type2 = 1
+      @random = 1
+  
+      if @attacker.types.any? { |type| type.id == attacker_move.type_id }
+        @STAB = 1.5
+      else
+        @STAB = 1
+      end
+  
+      damage_calculation
+  
+      @defender.current_health_point -= @damage_points
+      @defender.save
+  
+      @result = "#{@attacker.name} menyerang #{@defender.name} dengan #{attacker_move.name}."
+      @turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
+  
+      redirect_to battle_path
     end
-
-    damage_calculation
-
-    @defender.current_health_point -= @damage_points
-    @defender.save
-
-    @result = "#{@attacker.name} menyerang #{@defender.name} dengan #{attacker_move.name}."
-    @turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
-
-    redirect_to battle_path
   end
 
 
@@ -162,7 +171,7 @@ class BattlesController < ApplicationController
 
     if @step4 != 1
       random_generator
-      
+
       @step5 = @step4 * @random / 255
     else
       @step5 = @step4 * @random
