@@ -69,13 +69,21 @@ class PokemonsController < ApplicationController
   def destroy
     pokemon = Pokemon.find(params[:id])
 
-    if pokemon.destroy
-      flash[:success] = "Successfully deleted a pokemon."
-      redirect_to pokemons_path
+    # puts sqew
+
+    if pokemon.battles.ids.length != 0
+      flash[:danger] =  "The registered Pokémon in a battle cannot be deleted!"
+      redirect_to pokemon_path
     else
-      flash[:danger] = "Error occurred while deleting the Pokémon."
-      render :show
+      if pokemon.destroy
+        flash[:success] = "Successfully deleted a pokemon."
+        redirect_to pokemons_path
+      else
+        flash[:danger] = "Error occurred while deleting the Pokémon."
+        render :show
+      end
     end
+
   end
 
   # POST /pokemons/:pokemon_id/update_types
