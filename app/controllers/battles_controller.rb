@@ -108,6 +108,9 @@ class BattlesController < ApplicationController
     @attacker_move_power = attacker_move.power
     @attacker_attack_stat = @attacker.attack
     @defender_defense_stat = @defender.defense
+    @type1 = 1
+    @type2 = 1
+    @random = 1
 
     if @attacker.types.any? { |type| type.id == attacker_move.type_id }
       @STAB = 1.5
@@ -117,7 +120,7 @@ class BattlesController < ApplicationController
 
     damage_calculation
 
-    @defender.current_health_point -= @damage
+    @defender.current_health_point -= @damage_points
     @defender.save
 
     @result = "#{@attacker.name} menyerang #{@defender.name} dengan #{attacker_move.name}."
@@ -155,8 +158,22 @@ class BattlesController < ApplicationController
     @step1 = 2 * @attacker_level / 5 + 2
     @step2 = @step1 * @attacker_move_power * @attacker_attack_stat / @defender_defense_stat
     @step3 = @step2 / 50 + 2
-    @step4 = @step3 * @STAB
-    @damage = @step4.floor
+    @step4 = @step3 * @STAB * @type1 * @type2
+
+    if @step4 != 1
+      random_generator
+      
+      @step5 = @step4 * @random / 255
+    else
+      @step5 = @step4 * @random
+    end
+
+    @damage_points = @step5.floor
+  end
+
+  def random_generator
+    random_generator = Random.new
+    @random = random_generator.rand(217..255)
   end
 
   # Only allow a list of trusted parameters through.
