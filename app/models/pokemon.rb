@@ -7,6 +7,7 @@ class Pokemon < ApplicationRecord
   validates :special_attack, presence: true, numericality: { only_integer: true, less_than_or_equal_to: 100 }
   validates :special_defense, presence: true, numericality: { only_integer: true, less_than_or_equal_to: 100 }
   validates :level, presence: true, numericality: { only_integer: true, less_than_or_equal_to: 100 }
+  # validates :validate_selected_types
 
   # Relations
   has_many :moves_pokemons, dependent: :delete_all
@@ -21,9 +22,12 @@ class Pokemon < ApplicationRecord
   # Callbacks
   # after_save: set_default_value_of_current_power_points_on_moves_pokemons
 
-  # private
+  private
 
-  # def set_default_value_of_current_power_points_on_moves_pokemons
-
+  # def validate_selected_types
+  #   selected_types_count = type_ids.length
+  #   unless selected_types_count >= 1 && selected_types_count <= 2
+  #     errors.add(:type_ids, "must have at least 1 and at most 2 types selected")
+  #   end
   # end
 end

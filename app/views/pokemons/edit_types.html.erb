@@ -2,7 +2,7 @@
 
 <div class="container text-center">
   <div class="row justify-content-center">
-    <div class="text-center col col-lg-7">
+    <div class="col col-lg-7">
       <h3>Pokemon Data</h3>
       <p>ID:<%= @pokemon.id %></p>
       <p>Name:<%= @pokemon.name %></p>
@@ -10,29 +10,29 @@
       <h3>Types Data</h3>
       <%= form_with(model: @pokemon, url: pokemon_update_types_path(@pokemon), method: :post) do |form| %>
         <% if @pokemon.errors.any? %>
-          <div id="error_explanation">
-            <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
+          <div id="error_explanation" class="alert alert-danger my-4">
+            <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon's types from being saved:</h2>
             <ul>
               <% @pokemon.errors.each do |error| %>
-                <li><%= error.full_message %></li>
+                <li class="text-start"><%= error.full_message %></li>
               <% end %>
             </ul>
           </div>
         <% end %>
 
-        <div class="field">
-          <%= form.label :move_ids, "Select Types:", class: "sr-only" %> <br>
-          <%= form.collection_check_boxes(:type_ids, @types, :id, :name) do |b| %>
+        <div class="field mx-auto" style="width: 250px">
+          <%= form.label :type_ids, "Select Types:", class: "sr-only text-start" %> <br>
+          <%= form.collection_check_boxes(:type_ids, @types, :id, :name, class: "text-start") do |b| %>
             <%= b.check_box + b.label %><br>
           <% end %>
         </div>
 
         <div class="actions">
-          <%= form.submit "Next", class: "btn btn-lg btn-primary btn-block bg-secondary m-3" %>
+          <%= form.submit "Next", class: "btn btn-secondary m-3" %>
         </div>
       <% end %>
       
-      <%= button_to "Cancel", pokemon_path(@pokemon), method: :get, class: "text-center" %>
+      <%= button_to "Cancel", pokemon_path(@pokemon), method: :get, class: "btn btn-secondary" %>
     </div>
   </div>
 </div>
