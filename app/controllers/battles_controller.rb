@@ -96,7 +96,7 @@ class BattlesController < ApplicationController
         attacker_moves_pokemon.current_power_points = 0
         attacker_moves_pokemon.save
       end
-      
+
       flash[:danger] = "Can't use a move with 0 power points!"
       redirect_to battle_path
     else
@@ -127,8 +127,18 @@ class BattlesController < ApplicationController
       end
   
       damage_calculation
-  
+
       @defender.current_health_point -= @damage_points
+      
+      winner_checker
+
+      # puts dje
+      # puts 
+      
+      if @defender.current_health_point < 0
+        @defender.current_health_point = 0
+      end
+
       @defender.save
   
       @result = "#{@attacker.name} menyerang #{@defender.name} dengan #{attacker_move.name}."
@@ -143,6 +153,7 @@ class BattlesController < ApplicationController
   # Use callbacks to share common setup or constrains between actions.
   def set_battle
     @battle = Battle.find(params[:id])
+    @damage_points = 0
 
     set_pokemons_on_battle
   end
@@ -183,6 +194,55 @@ class BattlesController < ApplicationController
   def random_generator
     random_generator = Random.new
     @random = random_generator.rand(217..255)
+  end
+
+  def winner_checker
+    # if is_defender_hp_zero || is_attacker_moves_pp_equal_to_zero
+    if is_defender_hp_zero
+      attacker_battles_pokemon = @attacker.battles_pokemons.where(battle_id: @battle.id)[0]
+      attacker_battles_pokemon.winning_status = "Winner"
+
+      defender_battles_pokemon = @defender.battles_pokemons.where(battle_id: @battle.id)[0]
+      defender_battles_pokemon.winning_status = "Loser"
+
+      attacker_battles_pokemon.save
+      defender_battles_pokemon.save
+      
+      set_completed_to_battle_status
+    elsif is_attacker_moves_pp_equal_to_zero
+      attacker_battles_pokemon = @attacker.battles_pokemons.where(battle_id: @battle.id)[0]
+      attacker_battles_pokemon.winning_status = "Loser"
+
+      defender_battles_pokemon = @defender.battles_pokemons.where(battle_id: @battle.id)[0]
+      defender_battles_pokemon.winning_status = "Winner"
+
+      attacker_battles_pokemon.save
+      defender_battles_pokemon.save
+      
+      set_completed_to_battle_status
+    end
+  end
+
+  def is_defender_hp_zero
+    return @defender.current_health_point <= 0
+  end
+
+  def is_attacker_moves_pp_equal_to_zero
+    attacker_moves_count = @attacker.moves.count
+    attacker_moves_with_zero_pp = 0
+
+    @attacker.moves_pokemons.each do |move|
+      if move.current_power_points <= 0
+        attacker_moves_with_zero_pp += 1
+      end
+    end
+
+    return attacker_moves_with_zero_pp == attacker_moves_count
+  end
+
+  def set_completed_to_battle_status
+    @battle.status = "Completed"
+    @battle.save
   end
 
   # Only allow a list of trusted parameters through.
