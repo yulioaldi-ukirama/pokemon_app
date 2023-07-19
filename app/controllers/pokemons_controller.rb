@@ -81,14 +81,21 @@ class PokemonsController < ApplicationController
   # POST /pokemons/:pokemon_id/update_types
   def update_types
     @pokemon = Pokemon.find(params[:id])
-    @pokemon.type_ids = params[:pokemon][:type_ids]
-
-    if @pokemon.save
-      flash[:success] = "Types were successfully added to the Pokemon."
-      redirect_to pokemon_edit_moves_path(@pokemon)
+    type_ids = params[:pokemon][:type_ids]
+    
+    if type_ids.length < 2 || type_ids.length > 3
+      flash[:danger] = "Must have at least 1 and at most 2 types selected."
+      redirect_to pokemon_edit_types_path
     else
-      flash[:danger] = "No moves were selected."
-      render :edit_moves
+      @pokemon.type_ids = params[:pokemon][:type_ids]
+
+      if @pokemon.save
+        flash[:success] = "Types were successfully added to the Pokemon."
+        redirect_to pokemon_edit_moves_path(@pokemon)
+      else
+        flash[:danger] = "Error occurred while editing the pokemon's types."
+        render :edit_moves
+      end
     end
   end
 
