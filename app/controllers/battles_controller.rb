@@ -28,15 +28,19 @@ class BattlesController < ApplicationController
       flash[:danger] = "You must select 2 Pokémons to create a battle!"
       redirect_to new_battle_path
     else
+      is_death = false
+      is_unable_to_move = false
       @battle.pokemon_ids = pokemon_ids
       
-      # puts dhyi
-
-      is_death = false
-
       @battle.pokemons.each do |pokemon|
         if pokemon.current_health_point < 1
           is_death = true
+        end
+
+        pokemon.moves_pokemons.each do |move|
+          if move.current_power_points < 1
+            is_unable_to_move = true
+          end
         end
       end
       
@@ -44,15 +48,23 @@ class BattlesController < ApplicationController
         flash[:danger] = "You must select 2 Pokemons with current HP greater than 0 point!"
         redirect_to new_battle_path
       else
-        @battle.turn = 0
-        @battle.status = "Not Started"
-    
-        if @battle.save
-          flash[:success] = "Successfully created a Battle."
-          redirect_to battles_path
+        
+        # puts dhyi
+
+        if is_unable_to_move
+          flash[:danger] = "You must select 2 Pokemons with current PP of each move greater than 0 point!"
+          redirect_to new_battle_path
         else
-          flash[:alert] = "Error occurred while saving the Battle."
-          render :new
+          @battle.turn = 0
+          @battle.status = "Not Started"
+      
+          if @battle.save
+            flash[:success] = "Successfully created a Battle."
+            redirect_to battles_path
+          else
+            flash[:alert] = "Error occurred while saving the Battle."
+            render :new
+          end
         end
       end
     end
