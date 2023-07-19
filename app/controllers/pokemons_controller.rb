@@ -47,7 +47,7 @@ class PokemonsController < ApplicationController
       flash[:success] = "Successfully created a pokemon."
       redirect_to pokemon_edit_types_path(@pokemon)
     else
-      flash[:alert] = "Error occurred while saving the Pokémon."
+      flash[:danger] = "Error occurred while saving the Pokémon."
       render :new
     end
   end
@@ -60,7 +60,7 @@ class PokemonsController < ApplicationController
       flash[:success] = "Successfully updated a pokemon."
       redirect_to pokemon_path(@pokemon)
     else
-      flash[:alert] = "Error occurred while updating the Pokémon."
+      flash[:danger] = "Error occurred while updating the Pokémon."
       render :edit
     end
   end
@@ -73,7 +73,7 @@ class PokemonsController < ApplicationController
       flash[:success] = "Successfully deleted a pokemon."
       redirect_to pokemons_path
     else
-      flash[:alert] = "Error occurred while deleting the Pokémon."
+      flash[:danger] = "Error occurred while deleting the Pokémon."
       render :show
     end
   end
@@ -87,7 +87,7 @@ class PokemonsController < ApplicationController
       flash[:success] = "Types were successfully added to the Pokemon."
       redirect_to pokemon_edit_moves_path(@pokemon)
     else
-      flash[:alert] = "No moves were selected."
+      flash[:danger] = "No moves were selected."
       render :edit_moves
     end
   end
@@ -109,7 +109,7 @@ class PokemonsController < ApplicationController
       flash[:success] = "Moves were successfully added to the Pokemon."
       redirect_to pokemon_path(@pokemon)
     else
-      flash[:alert] = "No moves were selected."
+      flash[:danger] = "No moves were selected."
       render :edit_moves
     end
   end
