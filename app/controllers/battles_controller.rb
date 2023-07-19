@@ -48,9 +48,6 @@ class BattlesController < ApplicationController
         flash[:danger] = "You must select 2 Pokemons with current HP greater than 0 point!"
         redirect_to new_battle_path
       else
-        
-        # puts dhyi
-
         if is_unable_to_move
           flash[:danger] = "You must select 2 Pokemons with current PP of each move greater than 0 point!"
           redirect_to new_battle_path
@@ -73,28 +70,40 @@ class BattlesController < ApplicationController
 
   # POST /battles/:battle_id/move
   def move
+    # Init
     set_battle
 
     @attacker = Pokemon.find(params[:attacker_id])
     @defender = Pokemon.find(params[:defender_id])
 
-    attacker_move = Move.find(params[:attacker_move_id])
-    
-    @battle.status = @battle.turn > 0 ? "In Progress" : "Not Started"
+    # attacker_move = Move.find(params[:attacker_move_id])
+    attacker_moves_pokemon = MovesPokemon.find(params[:attacker_moves_pokemon_id])
+    attacker_move = attacker_moves_pokemon.move
 
+    # Turn
+    @battle.status = @battle.turn > 0 ? "In Progress" : "Not Started"
     @battle.turn += 1
 
-    @move = MovesPokemon.find_by(move_id: attacker_move.id)
+    # Move
+    is_unable_to_move = false
 
-    if @move.current_power_points.nil?
-      @move.current_power_points = attacker_move.power_points
-    end
+    # @move = MovesPokemon.find_by(move_id: attacker_move.id)
+
+    # puts dkdeo
+
+
+    # if @move.current_power_points.nil?
+    #   @move.current_power_points = attacker_move.power_points
+    # end
     
-    @move.current_power_points -= 1
+    # @move.current_power_points -= 1
+    attacker_moves_pokemon.current_power_points -= 1
     
-    @move.save
+    # @move.save
+    attacker_moves_pokemon.save
     @battle.save
 
+    # Calculation
     @attacker_level = @attacker.level
     @attacker_move_power = attacker_move.power
     @attacker_attack_stat = @attacker.attack
@@ -132,14 +141,14 @@ class BattlesController < ApplicationController
     @pokemon1 = @pokemons.order(:created_at).first
     @pokemon2 = @pokemons.order(created_at: :desc).first
 
-    @types_pokemon1 = @pokemon1.types
-    @types_pokemon2 = @pokemon2.types
+    @pokemon1_types = @pokemon1.types
+    @pokemon2_types = @pokemon2.types
 
-    @moves_pokemon1 = @pokemon1.moves
-    @moves_pokemon2 = @pokemon2.moves
+    @pokemon1_moves = @pokemon1.moves
+    @pokemon2_moves = @pokemon2.moves
 
-    @pokemons_moves_a = @pokemon1.moves_pokemons
-    @pokemons_moves_b = @pokemon2.moves_pokemons
+    @pokemon1_moves_pokemons = @pokemon1.moves_pokemons
+    @pokemon2_moves_pokemons = @pokemon2.moves_pokemons
   end
 
   def damage_calculation

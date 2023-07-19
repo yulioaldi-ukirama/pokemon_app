@@ -1,6 +1,7 @@
 class Pokemon < ApplicationRecord
   # Validations
   validates :name, presence: true, uniqueness: true
+  validates :max_health_point, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :max_health_point, presence: true, numericality: { only_integer: true }
   validates :attack, presence: true, numericality: { only_integer: true, less_than_or_equal_to: 100 }
   validates :defense, presence: true, numericality: { only_integer: true, less_than_or_equal_to: 100 }
