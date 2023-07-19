@@ -5,48 +5,48 @@
     <div class="text-center col col-lg-7">
       <%= form_with(model: @pokemon, url: pokemons_path, method: :post) do |form| %>
         <% if @pokemon.errors.any? %>
-          <div id="error_explanation">
-            <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this user from being saved:</h2>
+          <div id="error_explanation" class="alert alert-danger my-4">
+            <h3><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
             <ul>
               <% @pokemon.errors.each do |error| %>
-                <li><%= error.full_message %></li>
+                <li class="text-start"><%= error.full_message %></li>
               <% end %>
             </ul>
           </div>
         <% end %>
 
-        <div class="field">
+        <div class="field my-3">
           <%= form.label :name, class: "sr-only" %>
           <%= form.text_field :name, class: "form-control", placeholder: "Name" %>
         </div>
 
-        <div class="field">
+        <div class="field my-3">
           <%= form.label :max_health_point, class: "sr-only" %>
           <%= form.text_field :max_health_point, class: "form-control", placeholder: "Maximum Health Point" %>
         </div>
 
-        <div class="field">
+        <div class="field my-3">
           <%= form.label :attack, class: "sr-only" %>
           <%= form.text_field :attack, class: "form-control", placeholder: "Attack" %>
         </div>
 
-        <div class="field">
+        <div class="field my-3">
           <%= form.label :defense, class: "sr-only" %>
           <%= form.text_field :defense, class: "form-control", placeholder: "Defense" %>
         </div>
 
-        <div class="field">
+        <div class="field my-3">
           <%= form.label :special_attack, class: "sr-only" %>
           <%= form.text_field :special_attack, class: "form-control", placeholder: "Special Attack" %>
         </div>
 
-        <div class="field">
+        <div class="field my-3">
           <%= form.label :special_defense, class: "sr-only" %>
           <%= form.text_field :special_defense, class: "form-control", placeholder: "Special Defense" %>
         </div>
 
         <div class="actions">
-          <%= form.submit "Next", class: "btn btn-secondary" %>
+          <%= form.submit "Next", class: "btn btn-secondary m-3" %>
         </div>
       <% end %>
 
