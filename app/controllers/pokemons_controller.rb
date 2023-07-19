@@ -84,10 +84,10 @@ class PokemonsController < ApplicationController
     type_ids = params[:pokemon][:type_ids]
     
     if type_ids.length < 2 || type_ids.length > 3
-      flash[:danger] = "Must have at least 1 and at most 2 types selected."
+      flash[:danger] = "Must have at least 1 and at most 2 types selected!"
       redirect_to pokemon_edit_types_path
     else
-      @pokemon.type_ids = params[:pokemon][:type_ids]
+      @pokemon.type_ids = type_ids
 
       if @pokemon.save
         flash[:success] = "Types were successfully added to the Pokemon."
@@ -102,23 +102,31 @@ class PokemonsController < ApplicationController
   # POST /pokemons/:pokemon_id/update_moves
   def update_moves
     @pokemon = Pokemon.find(params[:id])
-    @pokemon.move_ids = params[:pokemon][:move_ids]
-
-    if @pokemon.save
-      @pokemon.moves_pokemons.each do |moves_pokemon|
-        if moves_pokemon.current_power_points.nil?
-          move = Move.find(moves_pokemon.move_id)
-          moves_pokemon.current_power_points = move.power_points
-          moves_pokemon.save
-        end
-      end
-
-      flash[:success] = "Moves were successfully added to the Pokemon."
-      redirect_to pokemon_path(@pokemon)
+    move_ids = params[:pokemon][:move_ids]
+    
+    if move_ids.length < 2 || move_ids.length > 5
+      flash[:danger] = "Must have at least 1 and at most 4 moves selected!"
+      redirect_to pokemon_edit_moves_path
     else
-      flash[:danger] = "No moves were selected."
-      render :edit_moves
+      @pokemon.move_ids = params[:pokemon][:move_ids]
+      
+      if @pokemon.save
+        @pokemon.moves_pokemons.each do |moves_pokemon|
+          if moves_pokemon.current_power_points.nil?
+            move = Move.find(moves_pokemon.move_id)
+            moves_pokemon.current_power_points = move.power_points
+            moves_pokemon.save
+          end
+        end
+  
+        flash[:success] = "Moves were successfully added to the Pokemon."
+        redirect_to pokemon_path(@pokemon)
+      else
+        flash[:danger] = "No moves were selected."
+        render :edit_moves
+      end
     end
+    
   end
 
 
