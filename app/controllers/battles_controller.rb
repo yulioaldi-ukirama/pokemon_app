@@ -2,6 +2,10 @@ class BattlesController < ApplicationController
   # GET /battles
   def index
     @battles = Battle.all.includes(:pokemons)
+
+    # @battles_pokemon1 = battle.pokemons[0].battles_pokemons.where(battle_id: battle.id)
+
+    # puts dekmob
   end
 
   # GET /battles/:battle_id/show
@@ -73,78 +77,83 @@ class BattlesController < ApplicationController
     # Init
     set_battle
 
-    @attacker = Pokemon.find(params[:attacker_id])
-    @defender = Pokemon.find(params[:defender_id])
-
-    # attacker_move = Move.find(params[:attacker_move_id])
-    attacker_moves_pokemon = MovesPokemon.find(params[:attacker_moves_pokemon_id])
-    attacker_move = attacker_moves_pokemon.move
-
-    # Turn
-    @battle.status = @battle.turn > 0 ? "In Progress" : "Not Started"
-    @battle.turn += 1
-
-    # Move
-    is_unable_to_move = false
-
-    # @move = MovesPokemon.find_by(move_id: attacker_move.id)
-
-    # puts dkdeo
-
-    if attacker_moves_pokemon.current_power_points <= 0
-      if attacker_moves_pokemon.current_power_points < 0
-        attacker_moves_pokemon.current_power_points = 0
-        attacker_moves_pokemon.save
-      end
-
-      flash[:danger] = "Can't use a move with 0 power points!"
+    if @battle.status == "Completed"
+      flash[:danger] = "The battle is completed. You can't use all of moves again!"
       redirect_to battle_path
     else
-      # if @move.current_power_points.nil?
-      #   @move.current_power_points = attacker_move.power_points
-      # end
-      
-      # @move.current_power_points -= 1
-      attacker_moves_pokemon.current_power_points -= 1
-      
-      # @move.save
-      attacker_moves_pokemon.save
-      @battle.save
+      @attacker = Pokemon.find(params[:attacker_id])
+      @defender = Pokemon.find(params[:defender_id])
   
-      # Calculation
-      @attacker_level = @attacker.level
-      @attacker_move_power = attacker_move.power
-      @attacker_attack_stat = @attacker.attack
-      @defender_defense_stat = @defender.defense
-      @type1 = 1
-      @type2 = 1
-      @random = 1
+      # attacker_move = Move.find(params[:attacker_move_id])
+      attacker_moves_pokemon = MovesPokemon.find(params[:attacker_moves_pokemon_id])
+      attacker_move = attacker_moves_pokemon.move
   
-      if @attacker.types.any? { |type| type.id == attacker_move.type_id }
-        @STAB = 1.5
+      # Turn
+      @battle.status = @battle.turn > 0 ? "In Progress" : "Not Started"
+      @battle.turn += 1
+  
+      # Move
+      is_unable_to_move = false
+  
+      # @move = MovesPokemon.find_by(move_id: attacker_move.id)
+  
+      # puts dkdeo
+  
+      if attacker_moves_pokemon.current_power_points <= 0
+        if attacker_moves_pokemon.current_power_points < 0
+          attacker_moves_pokemon.current_power_points = 0
+          attacker_moves_pokemon.save
+        end
+  
+        flash[:danger] = "Can't use a move with 0 power points!"
+        redirect_to battle_path
       else
-        @STAB = 1
+        # if @move.current_power_points.nil?
+        #   @move.current_power_points = attacker_move.power_points
+        # end
+        
+        # @move.current_power_points -= 1
+        attacker_moves_pokemon.current_power_points -= 1
+        
+        # @move.save
+        attacker_moves_pokemon.save
+        @battle.save
+    
+        # Calculation
+        @attacker_level = @attacker.level
+        @attacker_move_power = attacker_move.power
+        @attacker_attack_stat = @attacker.attack
+        @defender_defense_stat = @defender.defense
+        @type1 = 1
+        @type2 = 1
+        @random = 1
+    
+        if @attacker.types.any? { |type| type.id == attacker_move.type_id }
+          @STAB = 1.5
+        else
+          @STAB = 1
+        end
+    
+        damage_calculation
+  
+        @defender.current_health_point -= @damage_points
+        
+        winner_checker
+  
+        # puts dje
+        # puts 
+        
+        if @defender.current_health_point < 0
+          @defender.current_health_point = 0
+        end
+  
+        @defender.save
+    
+        @result = "#{@attacker.name} menyerang #{@defender.name} dengan #{attacker_move.name}."
+        @turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
+    
+        redirect_to battle_path
       end
-  
-      damage_calculation
-
-      @defender.current_health_point -= @damage_points
-      
-      winner_checker
-
-      # puts dje
-      # puts 
-      
-      if @defender.current_health_point < 0
-        @defender.current_health_point = 0
-      end
-
-      @defender.save
-  
-      @result = "#{@attacker.name} menyerang #{@defender.name} dengan #{attacker_move.name}."
-      @turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
-  
-      redirect_to battle_path
     end
   end
 
