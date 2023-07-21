@@ -9,6 +9,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Current HP</th>
+        <th>Level</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -19,6 +20,7 @@
           <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.id %></a></td>
           <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.name %></a></td>
           <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.current_health_point %>/<%= pokemon.max_health_point %></a></td>
+          <td><a href="<%= pokemon_path(pokemon) %>"><%= pokemon.level %></a></td>
         </tr>
       <% end %>
     </tbody>

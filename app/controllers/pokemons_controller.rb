@@ -39,9 +39,9 @@ class PokemonsController < ApplicationController
 
   # POST /pokemons
   def create
-    # belum ada validasi data kosong
     @pokemon = Pokemon.new(pokemon_params)
     @pokemon.current_health_point = @pokemon.max_health_point if @pokemon.current_health_point.nil?
+    @pokemon.base_exp = rand(50..350)
 
     if @pokemon.save
       flash[:success] = "Successfully created a pokemon."
