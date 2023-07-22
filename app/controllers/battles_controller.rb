@@ -222,7 +222,8 @@ class BattlesController < ApplicationController
       
       set_completed_to_battle_status
 
-      exp_calculation
+      level_up_checker
+      # learn_move
     elsif is_attacker_moves_pp_equal_to_zero
       attacker_battles_pokemon = @attacker.battles_pokemons.where(battle_id: @battle.id)[0]
       attacker_battles_pokemon.winning_status = "Loser"
@@ -235,7 +236,8 @@ class BattlesController < ApplicationController
       
       set_completed_to_battle_status
 
-      exp_calculation
+      level_up_checker
+      # learn_move
     end
   end
 
@@ -262,11 +264,36 @@ class BattlesController < ApplicationController
   end
 
   def exp_calculation
-    defender_b = @defender.base_exp
-    defender_l = @defender.level
-    attacker_s = @attacker.is_having_exp_all
+    gained_exp = @defender.base_exp * @defender.level / 7
+  end
+  
+  def level_up_checker
+    level_up_count = 0
 
-    step1 = @defender.bas
+    exp_calculation
+    
+    if @attacker.current_exp + gained_exp == @attacker.base_exp
+      @attacker.current_exp = 0
+      
+      level_up_count = 1
+    elsif @attacker.current_exp + gained_exp > @attacker.base_exp
+      @attacker.current_exp += gained_exp
+
+      level_up_count = @attacker.current_exp / @attacker.base_exp
+      level_up_count = level_up_count.floor
+
+      @attacker.current_exp %= @attacker.base_exp
+    elsif @attacker.current_exp + gained_exp < @attacker.base_exp
+      @attacker.current_exp += gained_exp
+    end
+
+    @attacker.level += level_up_count
+
+    @attacker.save
+  end
+
+  def learn_move
+    # BELUM
   end
 
   # Only allow a list of trusted parameters through.
