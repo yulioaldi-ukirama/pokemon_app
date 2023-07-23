@@ -12,11 +12,11 @@ class Pokemon < ApplicationRecord
   has_many :moves_pokemons, dependent: :delete_all
   has_many :moves, through: :moves_pokemons
 
-  has_many :battles_pokemons, dependent: :delete_all
-  has_many :battles, through: :battles_pokemons
+  # has_many :battles_pokemons, dependent: :delete_all
+  # has_many :battles, through: :battles_pokemons
 
-  has_many :types_pokemons, dependent: :delete_all
-  has_many :types, through: :types_pokemons
+  # has_many :types_pokemons, dependent: :delete_all
+  # has_many :types, through: :types_pokemons
 
   belongs_to :element_1, class_name: 'Element', foreign_key: 'element_1_id'
   belongs_to :element_2, class_name: 'Element', foreign_key: 'element_2_id'

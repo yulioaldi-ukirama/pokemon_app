@@ -21,28 +21,8 @@
         </div>
 
         <div class="field my-3">
-          <%= form.label :max_health_point, class: "sr-only" %>
-          <%= form.text_field :max_health_point, class: "form-control", placeholder: "Maximum Health Point" %>
-        </div>
-
-        <div class="field my-3">
-          <%= form.label :attack, class: "sr-only" %>
-          <%= form.text_field :attack, class: "form-control", placeholder: "Attack" %>
-        </div>
-
-        <div class="field my-3">
-          <%= form.label :defense, class: "sr-only" %>
-          <%= form.text_field :defense, class: "form-control", placeholder: "Defense" %>
-        </div>
-
-        <div class="field my-3">
-          <%= form.label :special_attack, class: "sr-only" %>
-          <%= form.text_field :special_attack, class: "form-control", placeholder: "Special Attack" %>
-        </div>
-
-        <div class="field my-3">
-          <%= form.label :special_defense, class: "sr-only" %>
-          <%= form.text_field :special_defense, class: "form-control", placeholder: "Special Defense" %>
+          <%= form.label :species_id, class: "sr-only" %>
+          <%= form.select :species_id, options_for_select(Species.pluck(:name, :id)), class: "form-control", placeholder: "Species" %>
         </div>
 
         <div class="actions">

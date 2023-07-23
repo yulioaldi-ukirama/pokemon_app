@@ -2,5 +2,5 @@ class Species < ApplicationRecord
   # Validations
 
   # Relations
-  belongs_to :pokemon
+  has_one :pokemon
 end

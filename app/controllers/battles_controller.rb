@@ -264,7 +264,7 @@ class BattlesController < ApplicationController
   end
 
   def exp_calculation
-    gained_exp = @defender.base_exp * @defender.level / 7
+    @gained_exp = @defender.base_exp * @defender.level / 7
   end
   
   def level_up_checker
@@ -272,19 +272,19 @@ class BattlesController < ApplicationController
 
     exp_calculation
     
-    if @attacker.current_exp + gained_exp == @attacker.base_exp
+    if @attacker.current_exp + @gained_exp == @attacker.base_exp
       @attacker.current_exp = 0
       
       level_up_count = 1
-    elsif @attacker.current_exp + gained_exp > @attacker.base_exp
-      @attacker.current_exp += gained_exp
+    elsif @attacker.current_exp + @gained_exp > @attacker.base_exp
+      @attacker.current_exp += @gained_exp
 
       level_up_count = @attacker.current_exp / @attacker.base_exp
       level_up_count = level_up_count.floor
 
       @attacker.current_exp %= @attacker.base_exp
-    elsif @attacker.current_exp + gained_exp < @attacker.base_exp
-      @attacker.current_exp += gained_exp
+    elsif @attacker.current_exp + @gained_exp < @attacker.base_exp
+      @attacker.current_exp += @gained_exp
     end
 
     @attacker.level += level_up_count

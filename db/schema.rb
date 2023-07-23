@@ -47,16 +47,6 @@ ActiveRecord::Schema.define(version: 2023_07_22_160043) do
     t.index ["pokemon_2_id"], name: "index_battles_on_pokemon_2_id"
   end
 
-  create_table "battles_pokemons", force: :cascade do |t|
-    t.bigint "battle_id", null: false
-    t.bigint "pokemon_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "winning_status", default: "Waiting"
-    t.index ["battle_id"], name: "index_battles_pokemons_on_battle_id"
-    t.index ["pokemon_id"], name: "index_battles_pokemons_on_pokemon_id"
-  end
-
   create_table "elements", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -70,10 +60,8 @@ ActiveRecord::Schema.define(version: 2023_07_22_160043) do
     t.integer "power"
     t.string "category"
     t.integer "power_points"
-    t.bigint "type_id", null: false
     t.bigint "element_id", null: false
     t.index ["element_id"], name: "index_moves_on_element_id"
-    t.index ["type_id"], name: "index_moves_on_type_id"
   end
 
   create_table "moves_pokemons", force: :cascade do |t|
@@ -119,32 +107,12 @@ ActiveRecord::Schema.define(version: 2023_07_22_160043) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "types", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "types_pokemons", force: :cascade do |t|
-    t.bigint "type_id", null: false
-    t.bigint "pokemon_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["pokemon_id"], name: "index_types_pokemons_on_pokemon_id"
-    t.index ["type_id"], name: "index_types_pokemons_on_type_id"
-  end
-
   add_foreign_key "battles", "pokemons", column: "pokemon_1_id"
   add_foreign_key "battles", "pokemons", column: "pokemon_2_id"
-  add_foreign_key "battles_pokemons", "battles"
-  add_foreign_key "battles_pokemons", "pokemons"
   add_foreign_key "moves", "elements"
-  add_foreign_key "moves", "types"
   add_foreign_key "moves_pokemons", "moves"
   add_foreign_key "moves_pokemons", "pokemons"
   add_foreign_key "pokemons", "elements", column: "element_1_id"
   add_foreign_key "pokemons", "elements", column: "element_2_id"
   add_foreign_key "pokemons", "species"
-  add_foreign_key "types_pokemons", "pokemons"
-  add_foreign_key "types_pokemons", "types"
 end

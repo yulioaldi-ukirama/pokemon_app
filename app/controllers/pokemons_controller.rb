@@ -1,6 +1,8 @@
 class PokemonsController < ApplicationController
   include PokemonsHelper
 
+  require 'json'
+
 
   # GET /pokemons
   def index
@@ -40,8 +42,24 @@ class PokemonsController < ApplicationController
   # POST /pokemons
   def create
     @pokemon = Pokemon.new(pokemon_params)
+    species = Species.find(@pokemon.species_id)
+
+    @pokemon.max_health_point = rand(50..100)
     @pokemon.current_health_point = @pokemon.max_health_point if @pokemon.current_health_point.nil?
+    @pokemon.attack = species.base_attack
+    @pokemon.defense = species.base_defense
+    @pokemon.special_attack = species.base_special_attack
+    @pokemon.special_defense = species.base_special_defense
+    @pokemon.element_1_id = JSON.parse(species.element_ids)[0]
+    @pokemon.element_2_id = JSON.parse(species.element_ids)[1]
     @pokemon.base_exp = rand(50..350)
+
+    p "@pokemon: #{@pokemon.inspect}"
+    p "@pokemon.name: #{@pokemon.name}"
+    p "@pokemon.species_id: #{@pokemon.species_id}"
+    p "pokemon_params: #{pokemon_params}"
+    p "species: #{species.inspect}"
+    p "species.element_ids: #{species.element_ids}"
 
     if @pokemon.save
       flash[:success] = "Successfully created a pokemon."
@@ -143,7 +161,7 @@ class PokemonsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def pokemon_params
-    params.require(:pokemon).permit(:name, :current_health_point, :max_health_point, :attack, :defense, :special_attack, :special_defense)
+    params.require(:pokemon).permit(:name, :species_id)
   end
   
   def moves_params
