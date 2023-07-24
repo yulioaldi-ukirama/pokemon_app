@@ -5,11 +5,11 @@
     <div class="text-center col col-lg-7">
       <%= form_with(model: @pokemon, url: pokemon_path(@pokemon), method: :patch) do |form| %>
         <% if @pokemon.errors.any? %>
-          <div id="error_explanation">
-            <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
+          <div id="error_explanation" class="alert alert-danger my-4">
+            <h3><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
             <ul>
               <% @pokemon.errors.each do |error| %>
-                <li><%= error.full_message %></li>
+                <li class="text-start"><%= error.full_message %></li>
               <% end %>
             </ul>
           </div>

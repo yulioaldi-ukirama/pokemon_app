@@ -81,7 +81,7 @@ class PokemonsController < ApplicationController
   def update
     @pokemon = Pokemon.find(params[:id])
 
-    if @pokemon.update(pokemon_params)
+    if @pokemon.update(pokemon_edit_params)
       flash[:success] = "Successfully updated a pokemon."
       redirect_to pokemon_path(@pokemon)
     else
@@ -169,6 +169,10 @@ class PokemonsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def pokemon_params
     params.require(:pokemon).permit(:name, :species_id)
+  end
+  
+  def pokemon_edit_params
+    params.require(:pokemon).permit(:name, :max_health_point, :attack, :defense, :special_attack, :special_defense)
   end
   
   def moves_params
