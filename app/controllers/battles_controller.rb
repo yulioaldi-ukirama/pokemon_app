@@ -1,8 +1,7 @@
 class BattlesController < ApplicationController
   # GET /battles
   def index
-    # @battles = Battle.all.includes(:pokemons)
-    @battles = Battle.all
+    @battles = Battle.order(updated_at: :desc)
   end
 
   # GET /battles/:battle_id/show
@@ -16,12 +15,13 @@ class BattlesController < ApplicationController
   def new
     @battle = Battle.new
 
-    # p fohta
-
+    # BELUM ADA VALIDASI PP > 0 HP > 0
+    
     # pokemon_ids_battles = Battle.pluck(:pokemon_1_id, :pokemon_2_id).flatten.compact.uniq
     pokemon_ids_in_complete_battles = Battle.where(status: "Completed").pluck(:pokemon_1_id, :pokemon_2_id).flatten.compact.uniq
     # @available_pokemons = Pokemon.where.not(id: pokemon_ids_battles).or(Pokemon.where(id: pokemon_ids_in_complete_battles))
     @available_pokemons = Pokemon.left_outer_joins(:battles_pokemon_1, :battles_pokemon_2).where(battles: { id: nil }).or(Pokemon.where(id: pokemon_ids_in_complete_battles)).compact.uniq
+    # p fohta
   end
 
   
@@ -339,10 +339,6 @@ class BattlesController < ApplicationController
     level_up_count = 0
 
     exp_calculation
-
-    # p "=================================================="
-    # p "@gained_exp = #{@gained_exp}"
-    # p "=================================================="
     
     if @winner.current_exp + @gained_exp == @winner.base_exp
       @winner.current_exp = 0

@@ -156,7 +156,26 @@ class PokemonsController < ApplicationController
         render :edit_moves
       end
     end
+  end
+
+  # POST /pokemons/heals
+  def heals
+    pokemons = Pokemon.all
+
+    pokemons.each do |pokemon|
+      pokemon.current_health_point = pokemon.max_health_point
+      pokemon.moves_pokemons.each do |pokemon_move|
+        move = Move.find_by(id: pokemon_move.move_id)
+        pokemon_move.current_power_points = move.power_points
+        
+        pokemon_move.save
+      end
+
+      pokemon.save
+    end
     
+    flash[:success] = "Successfully heals all pokemons."
+    redirect_to pokemons_path and return
   end
 
 

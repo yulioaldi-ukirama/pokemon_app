@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
   post '/pokemons/:id/update_types', to: 'pokemons#update_types', as: 'pokemon_update_types'
   post '/pokemons/:id/update_moves', to: 'pokemons#update_moves', as: 'pokemon_update_moves'
+  post '/pokemons/heals', to: 'pokemons#heals', as: 'pokemon_heals'
   
   # Battles
   resources :battles do
