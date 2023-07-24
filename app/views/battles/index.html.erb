@@ -20,15 +20,15 @@
 
     <tbody>
       <% @battles.each do |battle| %>
-        <% battles_pokemon1 = battle.pokemons[0].battles_pokemons.where(battle_id: battle.id) %>
-        <% battles_pokemon2 = battle.pokemons[1].battles_pokemons.where(battle_id: battle.id) %>
+        <% pokemon1 = battle.pokemon_1 %>
+        <% pokemon2 = battle.pokemon_2 %>
         <tr>
           <td><a href="<%= battle_path(battle) %>"><%= battle.id %></a></td>
-          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemons[0].name %></a></td>
-          <td><a href="<%= battle_path(battle) %>"><%= battles_pokemon1[0].winning_status %></a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= pokemon1.name %></a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemon_1_winning_status %></a></td>
           <td><a href="<%= battle_path(battle) %>">Versus</a></td>
-          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemons[1].name %></a></td>
-          <td><a href="<%= battle_path(battle) %>"><%= battles_pokemon2[0].winning_status %></a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= pokemon1.name %></a></td>
+          <td><a href="<%= battle_path(battle) %>"><%= battle.pokemon_2_winning_status %></a></td>
           <td><a href="<%= battle_path(battle) %>"><%= battle.turn %></a></td>
           <td><a href="<%= battle_path(battle) %>"><%= battle.status %></a></td>
         </tr>

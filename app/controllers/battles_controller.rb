@@ -1,7 +1,8 @@
 class BattlesController < ApplicationController
   # GET /battles
   def index
-    @battles = Battle.all.includes(:pokemons)
+    # @battles = Battle.all.includes(:pokemons)
+    @battles = Battle.all
   end
 
   # GET /battles/:battle_id/show
