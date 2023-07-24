@@ -16,7 +16,7 @@
     <tbody>
         <tr>
           <td><%= @battle.id %></td>
-          <td><%= @battle.turn %></td>
+          <td><%= "#{@battle.turn} (#{@pokemon_turn})" %></td>
           <td><%= @battle.status %></td>
         </tr>
     </tbody>
@@ -26,9 +26,10 @@
 <div class="container text-center">
   <div class="row justify-content-between">
     <div class="col-6">
-      <h1>Pokemon A Detail</h1>
-      <% battles_pokemon1 = @pokemon1.battles_pokemons.where(battle_id: @battle.id) %>
-      <h4 class="my-3"><%= battles_pokemon1[0].winning_status %></h4>
+      <h1 class="mt-4"><%= @pokemon1.name %>'s Detail</h1>
+      <% if @battle.pokemon_1_winning_status != "Waiting" %>
+        <h4 class="my-3"><%= @battle.pokemon_1_winning_status %></h4>
+      <% end %>
 
       <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -37,10 +38,7 @@
               <th>ID</th>
               <th>Name</th>
               <th>Current HP</th>
-              <th>Attack</th>
-              <th>Defense</th>
-              <th>Sp. Attack</th>
-              <th>Sp. Defense</th>
+              <th>Level</th>
               <th colspan="3"></th>
             </tr>
           </thead>
@@ -50,41 +48,13 @@
                 <td><%= @pokemon1.id %></td>
                 <td><%= @pokemon1.name %></td>
                 <td><%= @pokemon1.current_health_point %>/<%= @pokemon1.max_health_point %></td>
-                <td><%= @pokemon1.attack %></td>
-                <td><%= @pokemon1.defense %></td>
-                <td><%= @pokemon1.special_attack %></td>
-                <td><%= @pokemon1.special_defense %></td>
+                <td><%= @battle.pokemon_1_level %></td>
               </tr>
           </tbody>
         </table>
       </div>
 
-      <h3>Pokemon A Types</h3>
-
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th></th>
-              <th colspan="3"></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <% @pokemon1_types.each do |type| %>
-              <tr>
-                <td><a href="#"><%= type.id %></a></td>
-                <td><a href="#"><%= type.name %></a></td>
-              </tr>
-            <% end %>
-          </tbody>
-
-        </table>
-      </div>
-
-      <h3>Pokemon A Moves</h3>
+      <h3 class="mt-4">Moves</h3>
 
       <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -97,6 +67,8 @@
               <th colspan="3"></th>
             </tr>
           </thead>
+
+          <%# BIKIN ILANG KALO STATUS COMPLETED SAMA BUKAN GILIRANNYA %>
 
           <tbody>
             <% @pokemon1_moves.each do |move| %>
@@ -119,9 +91,10 @@
       </div>
     </div>
     <div class="col-6">
-      <h1>Pokemon B Detail</h1>
-      <% battles_pokemon2 = @pokemon2.battles_pokemons.where(battle_id: @battle.id) %>
-      <h4 class="my-3"><%= battles_pokemon2[0].winning_status %></h4>
+      <h1 class="mt-4"><%= @pokemon2.name %>'s Detail</h1>
+      <% if @battle.pokemon_2_winning_status != "Waiting" %>
+        <h4 class="my-3"><%= @battle.pokemon_2_winning_status %></h4>
+      <% end %>
 
       <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -130,10 +103,7 @@
               <th>ID</th>
               <th>Name</th>
               <th>Current HP</th>
-              <th>Attack</th>
-              <th>Defense</th>
-              <th>Sp. Attack</th>
-              <th>Sp. Defense</th>
+              <th>Level</th>
               <th colspan="3"></th>
             </tr>
           </thead>
@@ -143,41 +113,13 @@
                 <td><%= @pokemon2.id %></td>
                 <td><%= @pokemon2.name %></td>
                 <td><%= @pokemon2.current_health_point %>/<%= @pokemon2.max_health_point %></td>
-                <td><%= @pokemon2.attack %></td>
-                <td><%= @pokemon2.defense %></td>
-                <td><%= @pokemon2.special_attack %></td>
-                <td><%= @pokemon2.special_defense %></td>
+                <td><%= @battle.pokemon_2_level %></td>
               </tr>
           </tbody>
         </table>
       </div>
 
-      <h3>Pokemon B Types</h3>
-
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th></th>
-              <th colspan="3"></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <% @pokemon2_types.each do |type| %>
-              <tr>
-                <td><a href="#"><%= type.id %></a></td>
-                <td><a href="#"><%= type.name %></a></td>
-              </tr>
-            <% end %>
-          </tbody>
-
-        </table>
-      </div>
-
-      <h3>Pokemon B Moves</h3>
+      <h3 class="mt-4">Moves</h3>
 
       <div class="table-responsive">
         <table class="table table-striped table-sm">
