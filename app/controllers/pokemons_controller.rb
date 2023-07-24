@@ -12,8 +12,11 @@ class PokemonsController < ApplicationController
   # GET /pokemons/:pokemon_id/show
   def show
     @pokemon = Pokemon.find(params[:id])
-    @types = @pokemon.types
+    @element_1 = @pokemon.element_1
+    @element_2 = @pokemon.element_2
     @moves = @pokemon.moves
+
+    p "elements: #{@elements}"
   end
 
   # GET /pokemons/new
@@ -54,16 +57,20 @@ class PokemonsController < ApplicationController
     @pokemon.element_2_id = JSON.parse(species.element_ids)[1]
     @pokemon.base_exp = rand(50..350)
 
-    p "@pokemon: #{@pokemon.inspect}"
-    p "@pokemon.name: #{@pokemon.name}"
-    p "@pokemon.species_id: #{@pokemon.species_id}"
-    p "pokemon_params: #{pokemon_params}"
-    p "species: #{species.inspect}"
-    p "species.element_ids: #{species.element_ids}"
+    move_id = JSON.parse(species.learn_move_ids_path)[0]
+    @pokemon.move_ids = move_id
 
     if @pokemon.save
+      @pokemon.moves_pokemons.each do |moves_pokemon|
+        if moves_pokemon.current_power_points.nil?
+          move = Move.find(moves_pokemon.move_id)
+          moves_pokemon.current_power_points = move.power_points
+          moves_pokemon.save
+        end
+      end
+      
       flash[:success] = "Successfully created a pokemon."
-      redirect_to pokemon_edit_types_path(@pokemon)
+      redirect_to pokemon_path(@pokemon)
     else
       flash[:danger] = "Error occurred while saving the Pokémon."
       render :new
