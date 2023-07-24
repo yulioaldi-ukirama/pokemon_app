@@ -14,45 +14,65 @@ class BattlesController < ApplicationController
   # GET /battles/new
   def new
     @battle = Battle.new
-    @pokemons = Pokemon.all
+
+    pokemon_ids_in_battles = Battle.pluck(:pokemon_1_id, :pokemon_2_id).flatten.compact.uniq
+    @available_pokemons = Pokemon.where.not(id: pokemon_ids_in_battles)
   end
 
   
   # POST /battles
   def create
     @battle = Battle.new(battle_params)
-    pokemon_ids = params[:battle][:pokemon_ids]
+    # @battle = Battle.new
+    # pokemon_ids = params[:battle][:pokemon_ids]
+
+    pokemon_1_id = params[:battle][:pokemon_1_id]
+    pokemon_2_id = params[:battle][:pokemon_2_id]
     
-    if pokemon_ids.length != 3
-      flash[:danger] = "You must select 2 Pokémons to create a battle!"
+    # if pokemon_ids.length != 3
+    if pokemon_1_id.nil? && pokemon_2_id.nil? || pokemon_1_id == pokemon_2_id
+      flash[:danger] = "You must select 2 different Pokémons to create a battle!"
       redirect_to new_battle_path
     else
       is_death = false
       is_unable_to_move = false
       is_registered_in_another_battle = false
-      @battle.pokemon_ids = pokemon_ids
+      # @battle.pokemon_ids = pokemon_ids
+
+      @battle.pokemon_1_id = pokemon_1_id
+      @battle.pokemon_2_id = pokemon_2_id
+      pokemon_1 = @battle.pokemon_1
+      pokemon_2 = @battle.pokemon_2
       
-      @battle.pokemons.each do |pokemon|
-        if pokemon.current_health_point < 1
+      # @battle.pokemons.each do |pokemon|
+        if pokemon_1.current_health_point < 1 || pokemon_2.current_health_point < 1
           is_death = true
         end
         
-        pokemon.moves_pokemons.each do |move|
+        pokemon_1.moves_pokemons.each do |move|
+          if move.current_power_points < 1
+            is_unable_to_move = true
+          end
+        end
+        
+        pokemon_2.moves_pokemons.each do |move|
           if move.current_power_points < 1
             is_unable_to_move = true
           end
         end
 
-        if pokemon.battles_pokemons.count > 0
-          is_registered_in_another_battle = true
-        end
-      end
+        # if pokemon.battles_pokemons.count > 0
+        #   is_registered_in_another_battle = true
+        # end
+      # end
+
+      # p sibs
       
       # bikin function baru validation
-      if is_registered_in_another_battle
-        flash[:danger] = "The Pokémon you have chosen is already registered in another battle."
-        redirect_to new_battle_path
-      else
+      # if is_registered_in_another_battle
+      #   flash[:danger] = "The Pokémon you have chosen is already registered in another battle."
+      #   redirect_to new_battle_path
+      # else
         if is_death
           flash[:danger] = "You must select 2 Pokemons with current HP greater than 0 point!"
           redirect_to new_battle_path
@@ -63,6 +83,8 @@ class BattlesController < ApplicationController
           else
             @battle.turn = 0
             @battle.status = "Not Started"
+            @battle.pokemon_1_level = @battle.pokemon_1.level
+            @battle.pokemon_2_level = @battle.pokemon_2.level
         
             if @battle.save
               flash[:success] = "Successfully created a Battle."
@@ -73,7 +95,7 @@ class BattlesController < ApplicationController
             end
           end
         end
-      end
+      # end
     end
   end
 
@@ -298,6 +320,6 @@ class BattlesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def battle_params
-    params.require(:battle).permit(:pokemon_ids)
+    params.require(:battle).permit(:pokemon_1_id, :pokemon_2_id)
   end
 end
