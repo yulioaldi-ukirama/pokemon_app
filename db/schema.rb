@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_22_160043) do
+ActiveRecord::Schema.define(version: 2023_07_25_072134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,9 @@ ActiveRecord::Schema.define(version: 2023_07_22_160043) do
     t.string "pokemon_2_winning_status", default: "Waiting"
     t.integer "pokemon_1_level"
     t.integer "pokemon_2_level"
+    t.integer "winner_gained_exp"
+    t.integer "winner_level_up_count"
+    t.string "winner_exp_before"
     t.index ["pokemon_1_id"], name: "index_battles_on_pokemon_1_id"
     t.index ["pokemon_2_id"], name: "index_battles_on_pokemon_2_id"
   end
