@@ -157,6 +157,14 @@
 
 <%= button_to "Back", battles_path, method: :get, class: "btn btn-secondary mt-3" %>
 
-<%# bikin UI level up design no 3 %>
-
-<h3>gained_exp: <%= @gained_exp %> </h3>
+<% if @battle.status == "Completed" %>
+  <div class="container text-center my-4">
+    <h4 class="my-3"><%= @winner.name %></h4>
+    <p>Exp +<%= @gained_exp %> </p>
+    <p><%= @battle.winner_exp_before %> => <%= @winner.current_exp%>/<%= @winner.base_exp%></p>
+    
+    <% if !@battle.winner_level_up_count.nil? && @battle.winner_level_up_count > 0 %>
+      <p class = "mt-4">Level <%= @winner.level - @battle.winner_level_up_count %> => <%= @winner.level %> </p>
+    <% end %>
+  </div>
+<% end %>

@@ -7,8 +7,13 @@ class BattlesController < ApplicationController
   # GET /battles/:battle_id/show
   def show
     set_battle
-
+    
     @pokemon_turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
+    
+    if @battle.status == "Completed"
+      @winner = @battle.pokemon_1_winning_status == "Winner" ? @pokemon1 : @pokemon2
+      @gained_exp = @battle.winner_gained_exp
+    end
   end
 
   # GET /battles/new
@@ -173,7 +178,7 @@ class BattlesController < ApplicationController
         @defender.save
 
         if level_up_count > 0
-          redirect_to learn_move
+          redirect_to pokemon_learn_moves_path(level_up_count: level_up_count)
         else
           redirect_to battle_path
         end
@@ -257,16 +262,10 @@ class BattlesController < ApplicationController
       end
       
       save_health_point_to_battle_stat
-
-      # attacker_battles_pokemon.save
-      # defender_battles_pokemon.save
-
-      @battle.save
-      
       set_completed_to_battle_status
-
       level_up_checker
-      # learn_move
+      
+      @battle.save
     elsif is_attacker_moves_pp_equal_to_zero
       # attacker_battles_pokemon = @attacker.battles_pokemons.where(battle_id: @battle.id)[0]
       # attacker_battles_pokemon.winning_status = "Loser"
@@ -287,21 +286,13 @@ class BattlesController < ApplicationController
         @winner = @pokemon1
         @loser = @pokemon2
       end
-
-      save_health_point_to_battle_stat
-
-      # attacker_battles_pokemon.save
-      # defender_battles_pokemon.save
-
-      @battle.save
       
+      save_health_point_to_battle_stat
       set_completed_to_battle_status
-
       level_up_checker
-      # learn_move
+      
+      @battle.save
     end
-
-    # p xowkmdn
   end
 
   def is_defender_hp_zero
@@ -323,7 +314,7 @@ class BattlesController < ApplicationController
 
   def set_completed_to_battle_status
     @battle.status = "Completed"
-    @battle.save
+    # @battle.save
   end
 
   def save_health_point_to_battle_stat
@@ -337,8 +328,9 @@ class BattlesController < ApplicationController
   
   def level_up_checker
     level_up_count = 0
-
     exp_calculation
+
+    @battle.winner_exp_before = "#{@winner.current_exp}/#{@winner.base_exp}"
     
     if @winner.current_exp + @gained_exp == @winner.base_exp
       @winner.current_exp = 0
@@ -357,9 +349,12 @@ class BattlesController < ApplicationController
 
     @winner.level += level_up_count
 
-    
-
     @winner.save
+
+    @battle.winner_gained_exp = @gained_exp
+    @battle.winner_level_up_count = level_up_count
+
+    @battle.save
   end
 
   def learn_move
