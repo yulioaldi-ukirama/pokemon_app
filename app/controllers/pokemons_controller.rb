@@ -118,9 +118,10 @@ class PokemonsController < ApplicationController
   # DELETE /pokemons/:pokemon_id
   def destroy
     pokemon = Pokemon.find(params[:id])
+    pokemon_ids_in_ongoing_battles = Battle.where(status: ["Not Started", "In Progress"]).pluck(:pokemon_1_id, :pokemon_2_id).flatten.compact.uniq
 
-    if pokemon.battles.ids.length != 0
-      flash[:danger] =  "The registered Pokémon in a battle cannot be deleted!"
+    if pokemon_ids_in_ongoing_battles.include?(pokemon.id)
+      flash[:danger] =  "The registered Pokémon in a ongoing battle cannot be deleted!"
       redirect_to pokemon_path
     else
       if pokemon.destroy
