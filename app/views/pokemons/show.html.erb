@@ -89,8 +89,6 @@
 
 <div class="container text-center d-grid gap-2">
   <%= button_to "Edit Pokemon", edit_pokemon_path(@pokemon), method: :get, class: "btn btn-secondary" %>
-  <%= button_to "Edit Types", pokemon_edit_types_path(@pokemon), method: :get, class: "btn btn-secondary" %>
-  <%= button_to "Edit Moves", pokemon_learn_moves_path(@pokemon), method: :get, class: "btn btn-secondary" %>
 
   <%= button_to "Delete", pokemon_path(@pokemon), method: :delete, data: {confirm: 'Are you sure you want to delete a Pokemon named pokemon_name?'}, class: "btn btn-secondary" %>
 
