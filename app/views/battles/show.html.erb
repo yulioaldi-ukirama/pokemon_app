@@ -20,7 +20,11 @@
     <tbody>
         <tr>
           <td><%= @battle.id %></td>
-          <td><%= "#{@battle.turn} (#{@pokemon_turn})" %></td>
+          <% if @battle.status == "Completed" %>
+            <td><%= @battle.turn %> </td>
+          <% else %>
+            <td><%= @battle.turn %> &#8594; (<%= @pokemon_turn %>)</td>
+          <% end %>
           <td><%= @battle.status %></td>
         </tr>
     </tbody>
