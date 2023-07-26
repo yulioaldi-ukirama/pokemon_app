@@ -4,9 +4,14 @@
   <div class="row justify-content-center">
     <div class="text-center col col-lg-7">
       <p>ID:<%= @pokemon.id %></p>
-      <p class="mb-5">Name:<%= @pokemon.name %></p>
+      <p>Name:<%= @pokemon.name %></p>
+      <p class="mb-5">Level:<%= @pokemon.level %></p>
 
-      <%= form_with(model: @pokemon, url: pokemon_save_learn_moves_path(@pokemon), method: :post) do |form| %>
+      <p>You have <%= @learn_move_quota %> quota to learning moves</p>
+      <p>@available_moves.count: <%= @available_moves.count %></p>
+      <p>@available_moves: <%= @available_moves.pluck(:id, :name) %></p>
+
+      <%= form_with(model: @pokemon, url: pokemon_save_learn_moves_path(@pokemon, level_up_count: @level_up_count, free_move_space: @free_move_space, learn_move_quota: @learn_move_quota), method: :post) do |form| %>
         <% if @pokemon.errors.any? %>
           <div id="error_explanation">
             <h2><%= pluralize(@pokemon.errors.count, "error") %> prohibited this pokemon from being saved:</h2>
@@ -39,8 +44,9 @@
                   <td><a href="#"><%= @current_moves[0].name %></a></td>
                   <td>
                     <%= form.select :move1_id, options_for_select(
-                      [["Skip learning a move", nil]] + 
-                      @current_moves.pluck(:name, :id)
+                      # [["Skip learning a move", nil]] + 
+                      [["", nil]] + 
+                      @available_moves.pluck(:name, :id)
                     ), class: "form-control", placeholder: "Move" %>
                   </td>
                 <% end %>
@@ -54,8 +60,9 @@
                   <td><a href="#"><%= @current_moves[1].name %></a></td>
                   <td>
                     <%= form.select :move2_id, options_for_select(
-                      [["Skip learning a move", nil]] + 
-                      @current_moves.pluck(:name, :id)
+                      # [["Skip learning a move", nil]] + 
+                      [["", nil]] + 
+                      @available_moves.pluck(:name, :id)
                     ), class: "form-control", placeholder: "Move" %>
                   </td>
                 <% end %>
@@ -69,8 +76,9 @@
                   <td><a href="#"><%= @current_moves[2].name %></a></td>
                   <td>
                     <%= form.select :move3_id, options_for_select(
-                      [["Skip learning a move", nil]] + 
-                      @current_moves.pluck(:name, :id)
+                      # [["Skip learning a move", nil]] + 
+                      [["", nil]] + 
+                      @available_moves.pluck(:name, :id)
                     ), class: "form-control", placeholder: "Move" %>
                   </td>
                 <% end %>
@@ -84,8 +92,9 @@
                   <td><a href="#"><%= @current_moves[3].name %></a></td>
                   <td>
                     <%= form.select :move4_id, options_for_select(
-                      [["Skip learning a move", nil]] + 
-                      @current_moves.pluck(:name, :id)
+                      # [["Skip learning a move", nil]] + 
+                      [["", nil]] + 
+                      @available_moves.pluck(:name, :id)
                     ), class: "form-control", placeholder: "Move" %>
                   </td>
                 <% end %>

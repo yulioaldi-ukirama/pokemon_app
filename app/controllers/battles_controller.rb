@@ -193,17 +193,23 @@ class BattlesController < ApplicationController
           # Jika dapat learn move
           if learn_move_quota > 0
             # Jika ada slot kosong
-            if learn_move_quota < free_move_space && @winner.moves.count <= 4
+            if learn_move_quota <= free_move_space && @winner.moves.count <= 4
               learn_move_auto_fill
 
               save_health_point_to_battle_stat
               redirect_to battle_path
-            else
+            elsif learn_move_quota > free_move_space && @winner.moves.count == 4
               # handling ada slot tapi ada sisa buat manual
-              
+              quota = learn_move_quota
+              quota -= free_move_space
 
               save_health_point_to_battle_stat
-              redirect_to pokemon_learn_moves_path(@winner, level_up_count: @level_up_count)
+              redirect_to pokemon_learn_moves_path(
+                @winner, 
+                level_up_count: @level_up_count, 
+                free_move_space: free_move_space,
+                learn_move_quota: quota,
+              )
             end
           end
         else
@@ -376,8 +382,22 @@ class BattlesController < ApplicationController
   end
   
   def learn_move_auto_fill
-    if learn_move_quota < free_move_space
-      index = @winner.moves.count + learn_move_quota
+    if learn_move_quota <= free_move_space
+      index = @winner.moves.count + learn_move_quota - 1
+
+      p "\n==============================="
+      p "index: #{index}"
+      p "===============================\n"
+
+      if index > 4
+        save_health_point_to_battle_stat
+        redirect_to pokemon_learn_moves_path(
+          @winner, 
+          level_up_count: @level_up_count, 
+          free_move_space: free_move_space,
+          learn_move_quota: learn_move_quota,
+        ) and return
+      end
 
       @learnable_move_ids = JSON.parse(@winner.species.learn_move_ids_path)[0..index]
 
@@ -400,6 +420,7 @@ class BattlesController < ApplicationController
       p "\n==============================="
       p "@winner.moves: #{@winner.moves.pluck(:id, :name)}"
       p "===============================\n"
+    # elsif 
     end
   end
 
