@@ -30,13 +30,17 @@
             <%= form.submit "Submit", class: "btn btn-lg btn-primary btn-block bg-secondary m-3" %>
           </div>
         <% end %>
+      <% elsif @available_pokemons.count == 1 %>
+        <div class="field">
+          <h5>For now, there is only 1 Pokémon ready to participate in the battle</h5>
+        </div>
       <% else %>
         <div class="field">
           <h5>The pokemon's data is empty</h5>
         </div>
       <% end %>
 
-      <%= button_to "Cancel", battles_path, method: :get, class: "text-center" %>
+      <%= button_to "Cancel", battles_path, method: :get, class: "text-center my-4" %>
     </div>
   </div>
 </div>

@@ -19,14 +19,25 @@ class BattlesController < ApplicationController
   # GET /battles/new
   def new
     @battle = Battle.new
-
-    # BELUM ADA VALIDASI PP > 0 HP > 0
     
-    # pokemon_ids_battles = Battle.pluck(:pokemon_1_id, :pokemon_2_id).flatten.compact.uniq
-    pokemon_ids_in_complete_battles = Battle.where(status: "Completed").pluck(:pokemon_1_id, :pokemon_2_id).flatten.compact.uniq
-    # @available_pokemons = Pokemon.where.not(id: pokemon_ids_battles).or(Pokemon.where(id: pokemon_ids_in_complete_battles))
-    @available_pokemons = Pokemon.left_outer_joins(:battles_pokemon_1, :battles_pokemon_2).where(battles: { id: nil }).or(Pokemon.where(id: pokemon_ids_in_complete_battles)).compact.uniq
-    # p fohta
+    all_pokemons = Pokemon.all
+    all_pokemon_ids = all_pokemons.pluck(:id)
+    pokemon_ids_in_ongoing_battles = Battle.where(status: ["Not Started", "In Progress"]).pluck(:pokemon_1_id, :pokemon_2_id).flatten.compact.uniq
+    pokemon_ids_with_hp_zero_or_less = Pokemon.where("current_health_point <= ?", 0).pluck(:id)
+    pokemon_ids_with_pp_zero_or_less = MovesPokemon.where("current_power_points <= ?", 0).pluck(:pokemon_id)
+
+    available_pokemons_ids = all_pokemon_ids - pokemon_ids_in_ongoing_battles - pokemon_ids_with_hp_zero_or_less - pokemon_ids_with_pp_zero_or_less
+    @available_pokemons = Pokemon.find(available_pokemons_ids).sort_by { |pokemon| pokemon.name }
+
+    # p "==================================="
+    # p "all_pokemon_ids: #{all_pokemon_ids}"
+    # p "pokemon_ids_in_ongoing_battles: #{pokemon_ids_in_ongoing_battles}"
+    # p "pokemon_ids_with_hp_zero_or_less: #{pokemon_ids_with_hp_zero_or_less}"
+    # p "pokemon_ids_with_pp_zero_or_less: #{pokemon_ids_with_pp_zero_or_less}"
+    # p "++++++++++"
+    # p "available_pokemons_ids: #{available_pokemons_ids}"
+    # p "@available_pokemons: #{@available_pokemons}"
+    # p "==================================="
   end
 
   
@@ -80,8 +91,7 @@ class BattlesController < ApplicationController
       
           if @battle.save
             flash[:success] = "Successfully created a Battle."
-            # bikin redirect ke battle_path
-            redirect_to battles_path
+            redirect_to battle_path(@battle)
           else
             flash[:alert] = "Error occurred while saving the Battle."
             render :new
