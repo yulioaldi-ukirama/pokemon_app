@@ -80,6 +80,7 @@ class BattlesController < ApplicationController
       
           if @battle.save
             flash[:success] = "Successfully created a Battle."
+            # bikin redirect ke battle_path
             redirect_to battles_path
           else
             flash[:alert] = "Error occurred while saving the Battle."
@@ -96,6 +97,7 @@ class BattlesController < ApplicationController
     # Init
     set_battle
 
+    # Validasi completed battle
     if @battle.status == "Completed"
       flash[:danger] = "The battle is completed. You can't use all of moves again!"
       redirect_to battle_path
@@ -105,6 +107,7 @@ class BattlesController < ApplicationController
 
       @pokemon_turn = @battle.turn.even? ? "#{@pokemon2.name}'s turn" : "#{@pokemon1.name}'s turn"
 
+      # Validasi pokemon turn
       if @battle.turn.even? && @attacker.id != @pokemon2.id
         flash[:danger] = "Please follow the rules regarding turns!"
         redirect_to battle_path
@@ -118,29 +121,28 @@ class BattlesController < ApplicationController
 
         return
       end
+      
+      # Move
+      is_unable_to_move = false
 
       attacker_moves_pokemon = MovesPokemon.find(params[:attacker_moves_pokemon_id])
       attacker_move = attacker_moves_pokemon.move
   
-      # Turn
-      @battle.turn += 1
-      @battle.status = @battle.turn > 0 ? "In Progress" : "Not Started"
-      
-      # Move
-      is_unable_to_move = false
-  
+      # Validasi PP dari move yang dilakukan
       if attacker_moves_pokemon.current_power_points <= 0
-        if attacker_moves_pokemon.current_power_points < 0
-          attacker_moves_pokemon.current_power_points = 0
-          attacker_moves_pokemon.save
-        end
+        attacker_moves_pokemon.current_power_points = 0
+        attacker_moves_pokemon.save
   
         flash[:danger] = "Can't use a move with 0 power points!"
         redirect_to battle_path
       else
+        # Jika PP > 0
         attacker_moves_pokemon.current_power_points -= 1
-        
         attacker_moves_pokemon.save
+
+        # Turn
+        @battle.turn += 1
+        @battle.status = @battle.turn > 0 ? "In Progress" : "Not Started"
         @battle.save
     
         # Calculations
@@ -156,30 +158,56 @@ class BattlesController < ApplicationController
         @type2 = 1
         @random = 1
 
-        level_up_count = 0
+        @level_up_count = 0
     
-        # if @attacker.types.any? { |type| type.id == attacker_move.type_id }
         if attacker_elements.any? { |element| element.id == attacker_move.element.id }
           @STAB = 1.5
         else
           @STAB = 1
         end
     
-        damage_calculation
+        @damage_points = damage_calculation
   
         @defender.current_health_point -= @damage_points
+
+        @defender.save
+        set_battle
         
         winner_checker
-        
+
         if @defender.current_health_point < 0
           @defender.current_health_point = 0
         end
-  
-        @defender.save
 
-        if level_up_count > 0
-          redirect_to pokemon_learn_moves_path(level_up_count: level_up_count)
+        @defender.save
+        set_battle
+
+        # Jika battle selesai
+        if @battle.status == "Completed"
+          p "\n==============================="
+          p "@level_up_count: #{@level_up_count}"
+          p "free_move_space: #{free_move_space}"
+          p "learn_move_quota: #{learn_move_quota}"
+          p "===============================\n"
+
+          # Jika dapat learn move
+          if learn_move_quota > 0
+            # Jika ada slot kosong
+            if learn_move_quota < free_move_space && @winner.moves.count <= 4
+              learn_move_auto_fill
+
+              save_health_point_to_battle_stat
+              redirect_to battle_path
+            else
+              # handling ada slot tapi ada sisa buat manual
+              
+
+              save_health_point_to_battle_stat
+              redirect_to pokemon_learn_moves_path(@winner, level_up_count: @level_up_count)
+            end
+          end
         else
+          save_health_point_to_battle_stat
           redirect_to battle_path
         end
       end
@@ -197,13 +225,8 @@ class BattlesController < ApplicationController
   end
 
   def set_pokemons_on_battle
-    # @pokemons = @battle.pokemons
-
     @pokemon1 = @battle.pokemon_1
     @pokemon2 = @battle.pokemon_2
-
-    # @pokemon1_types = @pokemon1.types
-    # @pokemon2_types = @pokemon2.types
 
     @pokemon1_element_1 = @pokemon1.element_1
     @pokemon1_element_2 = @pokemon1.element_2
@@ -224,29 +247,23 @@ class BattlesController < ApplicationController
     @step4 = @step3 * @STAB * @type1 * @type2
 
     if @step4 != 1
-      random_generator
+      @random = random_generator
 
       @step5 = @step4 * @random / 255
     else
       @step5 = @step4 * @random
     end
 
-    @damage_points = @step5.floor
+    return @step5.floor
   end
 
   def random_generator
-    random_generator = Random.new
-    @random = random_generator.rand(217..255)
+    random = Random.new
+    return random.rand(217..255)
   end
 
   def winner_checker
     if is_defender_hp_zero
-      # attacker_battles_pokemon = @attacker.battles_pokemons.where(battle_id: @battle.id)[0]
-      # attacker_battles_pokemon.winning_status = "Winner"
-
-      # defender_battles_pokemon = @defender.battles_pokemons.where(battle_id: @battle.id)[0]
-      # defender_battles_pokemon.winning_status = "Loser"
-
       if @attacker.id == @pokemon1.id
         @battle.pokemon_1_winning_status = "Winner"
         @battle.pokemon_2_winning_status = "Loser"
@@ -267,12 +284,6 @@ class BattlesController < ApplicationController
       
       @battle.save
     elsif is_attacker_moves_pp_equal_to_zero
-      # attacker_battles_pokemon = @attacker.battles_pokemons.where(battle_id: @battle.id)[0]
-      # attacker_battles_pokemon.winning_status = "Loser"
-
-      # defender_battles_pokemon = @defender.battles_pokemons.where(battle_id: @battle.id)[0]
-      # defender_battles_pokemon.winning_status = "Winner"
-
       if @attacker.id == @pokemon1.id
         @battle.pokemon_1_winning_status = "Loser"
         @battle.pokemon_2_winning_status = "Winner"
@@ -314,51 +325,82 @@ class BattlesController < ApplicationController
 
   def set_completed_to_battle_status
     @battle.status = "Completed"
-    # @battle.save
   end
 
   def save_health_point_to_battle_stat
+    # sinkron data antara pokemon1/2 ke defender
     @battle.pokemon_1_health_point = "#{@pokemon1.current_health_point}/#{@pokemon1.max_health_point}"
     @battle.pokemon_2_health_point = "#{@pokemon2.current_health_point}/#{@pokemon2.max_health_point}"
+
+    @battle.save
   end
 
   def exp_calculation
-    @gained_exp = @loser.base_exp * @loser.level / 7
+    return @loser.base_exp * @loser.level / 7
   end
   
   def level_up_checker
-    level_up_count = 0
-    exp_calculation
+    @gained_exp = exp_calculation
 
     @battle.winner_exp_before = "#{@winner.current_exp}/#{@winner.base_exp}"
     
     if @winner.current_exp + @gained_exp == @winner.base_exp
       @winner.current_exp = 0
       
-      level_up_count = 1
+      @level_up_count = 1
     elsif @winner.current_exp + @gained_exp > @winner.base_exp
       @winner.current_exp += @gained_exp
 
-      level_up_count = @winner.current_exp / @winner.base_exp
-      level_up_count = level_up_count.floor
+      @level_up_count = @winner.current_exp / @winner.base_exp
+      @level_up_count = @level_up_count.floor
 
       @winner.current_exp %= @winner.base_exp
     elsif @winner.current_exp + @gained_exp < @winner.base_exp
       @winner.current_exp += @gained_exp
     end
 
-    @winner.level += level_up_count
-
+    @winner.level += @level_up_count
     @winner.save
 
     @battle.winner_gained_exp = @gained_exp
-    @battle.winner_level_up_count = level_up_count
-
+    @battle.winner_level_up_count = @level_up_count
     @battle.save
   end
+  
+  def learn_move_quota
+    return @level_up_count / 1
+  end
+  
+  def free_move_space
+    return 4 - @winner.moves.count
+  end
+  
+  def learn_move_auto_fill
+    if learn_move_quota < free_move_space
+      index = @winner.moves.count + learn_move_quota
 
-  def learn_move
-    # BELUM
+      @learnable_move_ids = JSON.parse(@winner.species.learn_move_ids_path)[0..index]
+
+      p "\n==============================="
+      p "@learnable_move_ids: #{@learnable_move_ids}"
+      p "===============================\n"
+
+      @winner.move_ids = @learnable_move_ids
+      @winner.save
+      
+      @winner.moves_pokemons.each do |moves_pokemon|
+        if moves_pokemon.current_power_points.nil?
+          move = Move.find(moves_pokemon.move_id)
+          moves_pokemon.current_power_points = move.power_points
+          moves_pokemon.save
+        end
+      end
+      
+      @winner.save
+      p "\n==============================="
+      p "@winner.moves: #{@winner.moves.pluck(:id, :name)}"
+      p "===============================\n"
+    end
   end
 
   # Only allow a list of trusted parameters through.

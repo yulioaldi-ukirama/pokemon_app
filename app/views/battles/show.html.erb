@@ -51,7 +51,13 @@
               <tr>
                 <td><%= @pokemon1.id %></td>
                 <td><%= @pokemon1.name %></td>
-                <td><%= @battle.pokemon_1_health_point %></td>
+                <td>
+                  <% if @battle.status != "Completed" %>
+                    <%= @pokemon1.current_health_point %>/<%= @pokemon1.max_health_point %>
+                  <% else %>
+                    <%= @battle.pokemon_1_health_point %>
+                  <% end %>
+                </td>
                 <td><%= @battle.pokemon_1_level %></td>
               </tr>
           </tbody>
@@ -75,8 +81,6 @@
               </tr>
             </thead>
 
-            <%# BIKIN ILANG KALO STATUS COMPLETED SAMA BUKAN GILIRANNYA %>
-
             <tbody>
               <% @pokemon1_moves.each do |move| %>
                 <% moves_pokemon = @pokemon1_moves_pokemons.find_by(move_id: move.id) %>
@@ -85,9 +89,11 @@
                   <td><a href="#"><%= move.name %></a></td>
                   <td><a href="#"><%= moves_pokemon.current_power_points ? moves_pokemon.current_power_points : move.power_points %>/<%= move.power_points %></a></td>
                   <td>
-                    <%= form_with(url: move_battle_path(@battle, attacker_id: @pokemon1.id, defender_id: @pokemon2.id), method: :post) do |f| %>
-                      <%= f.hidden_field :attacker_moves_pokemon_id, value: moves_pokemon.id %>
-                      <%= f.submit "Use", class: "btn btn-secondary" %>
+                    <% if !@battle.turn.even? %>
+                      <%= form_with(url: move_battle_path(@battle, attacker_id: @pokemon1.id, defender_id: @pokemon2.id), method: :post) do |f| %>
+                        <%= f.hidden_field :attacker_moves_pokemon_id, value: moves_pokemon.id %>
+                        <%= f.submit "Use", class: "btn btn-secondary" %>
+                      <% end %>
                     <% end %>
                   </td>
                 </tr>
@@ -119,7 +125,13 @@
               <tr>
                 <td><%= @pokemon2.id %></td>
                 <td><%= @pokemon2.name %></td>
-                <td><%= @battle.pokemon_2_health_point %></td>
+                <td>
+                  <% if @battle.status != "Completed" %>
+                    <%= @pokemon2.current_health_point %>/<%= @pokemon2.max_health_point %>
+                  <% else %>
+                    <%= @battle.pokemon_2_health_point %>
+                  <% end %>
+                </td>
                 <td><%= @battle.pokemon_2_level %></td>
               </tr>
           </tbody>
@@ -151,14 +163,12 @@
                   <td><a href="#"><%= move.name %></a></td>
                   <td><a href="#"><%= moves_pokemon.current_power_points ? moves_pokemon.current_power_points : move.power_points %>/<%= move.power_points %></a></td>
                   <td>
+                    <% if @battle.turn.even? %>
                       <%= form_with(url: move_battle_path(@battle, attacker_id: @pokemon2.id, defender_id: @pokemon1.id), method: :post) do |f| %>
                         <%= f.hidden_field :attacker_moves_pokemon_id, value: moves_pokemon.id %>
                         <%= f.submit "Use", class: "btn btn-secondary" %>
                       <% end %>
-
-                      <%#  %>
-                    <%#  %>
-
+                    <% end %>
                   </td>
                 </tr>
               <% end %>
@@ -171,18 +181,18 @@
 </div>
 
 <% if @battle.status == "Completed" %>
-  <div class="container text-center my-5">
+  <div class="container text-center mt-5">
     <div class="row justify-content-center">
       <div class="col-6">
         <div class="card">
           <%= image_tag('winner.jpg', class: "card-img-top", alt: "winner") %>
           <div class="card-body mt-5">
             <h3 class="card-title"><%= @winner.name %></h3>
-            <p class="card-text">Exp +<%= @gained_exp %></p>
-            <p class="card-text"><%= @battle.winner_exp_before %> &#8594; <%= @winner.current_exp%>/<%= @winner.base_exp%></p>
+            <p class="card-text m-0">Exp +<%= @gained_exp %></p>
+            <p class="card-text m-0"><%= @battle.winner_exp_before %> &#8594; <%= @winner.current_exp%>/<%= @winner.base_exp%></p>
 
             <% if !@battle.winner_level_up_count.nil? && @battle.winner_level_up_count > 0 %>
-              <h5 class="btn btn-secondary m-auto">Level <%= @winner.level - @battle.winner_level_up_count %> &#8611; <%= @winner.level %></h5>
+              <h5 class="btn btn-secondary mt-4 mb-0">Level <%= @winner.level - @battle.winner_level_up_count %> &#8611; <%= @winner.level %></h5>
             <% end %>
           </div>
         </div>
@@ -191,6 +201,6 @@
   </div>
 <% end %>
 
-<div class="container text-center my-5">
+<div class="container text-center mt-2">
   <%= button_to "Back", battles_path, method: :get, class: "btn btn-secondary my-4" %>
 </div>

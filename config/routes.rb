@@ -16,10 +16,10 @@ Rails.application.routes.draw do
   # delete '/pokemons/:id', to: 'pokemons#destroy', as: 'pokemon_delete'
   
   get '/pokemons/:id/edit_types', to: 'pokemons#edit_types', as: 'pokemon_edit_types'
-  get '/pokemons/:id/edit_moves', to: 'pokemons#edit_moves', as: 'pokemon_edit_moves'
+  get '/pokemons/:id/learn_moves', to: 'pokemons#learn_moves', as: 'pokemon_learn_moves'
 
   post '/pokemons/:id/update_types', to: 'pokemons#update_types', as: 'pokemon_update_types'
-  post '/pokemons/:id/update_moves', to: 'pokemons#update_moves', as: 'pokemon_update_moves'
+  post '/pokemons/:id/save_learn_moves', to: 'pokemons#save_learn_moves', as: 'pokemon_save_learn_moves'
   post '/pokemons/heals', to: 'pokemons#heals', as: 'pokemon_heals'
   
   # Battles

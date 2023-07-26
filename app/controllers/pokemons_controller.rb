@@ -15,8 +15,6 @@ class PokemonsController < ApplicationController
     @element_1 = @pokemon.element_1
     @element_2 = @pokemon.element_2
     @moves = @pokemon.moves
-
-    p "elements: #{@elements}"
   end
 
   # GET /pokemons/new
@@ -35,10 +33,31 @@ class PokemonsController < ApplicationController
     @types = Type.all
   end
 
-  # GET /pokemons/:pokemon_id/edit_moves
-  def edit_moves
+  # GET /pokemons/:pokemon_id/learn_moves
+  def learn_moves
     @pokemon = Pokemon.find(params[:id])
-    @moves = Move.all
+    species = Species.find(@pokemon.species_id)
+
+    @current_moves = @pokemon.moves
+    learn_move_ids_path = JSON.parse(species.learn_move_ids_path)
+    
+    @level_up_count = 0
+    @level_up_count = params[:level_up_count]
+
+    if !@level_up_count.nil? && @level_up_count.to_i > 1
+      available_learn_move_ids = learn_move_ids_path[0..@level_up_count]
+      @available_moves = Move.find(available_learn_move_ids)
+    end
+
+    p "\n====================================="
+    p "@level_up_count: #{@level_up_count}"
+    p "learn_move_ids_path: #{learn_move_ids_path}"
+    p "learn_move_ids_path[2]: #{learn_move_ids_path[2]}"
+    p "@current_moves: #{@current_moves}"
+    p "@current_moves.class: #{@current_moves.class}"
+    p "@available_moves: #{@available_moves}"
+    p "@available_moves.class: #{@available_moves.class}"
+    p "=====================================\n"
   end
 
 
@@ -129,33 +148,45 @@ class PokemonsController < ApplicationController
     end
   end
 
-  # POST /pokemons/:pokemon_id/update_moves
-  def update_moves
+  # POST /pokemons/:pokemon_id/learn_moves
+  def save_learn_moves
     @pokemon = Pokemon.find(params[:id])
-    move_ids = params[:pokemon][:move_ids]
+    level_up_count = params[:level_up_count]
+    move1 = params[:pokemon][:move1_id]
+    move2 = params[:pokemon][:move2_id]
+    move3 = params[:pokemon][:move3_id]
+    move4 = params[:pokemon][:move4_id]
+
+    p "\n=========================="
+    p "move1: #{move1}"
+    p "move2: #{move2}"
+    p "move3: #{move3}"
+    p "move4: #{move4}"
+    p "==========================\n"
     
-    if move_ids.length < 2 || move_ids.length > 5
-      flash[:danger] = "Must have at least 1 and at most 4 moves selected!"
-      redirect_to pokemon_edit_moves_path
-    else
-      @pokemon.move_ids = params[:pokemon][:move_ids]
+    # if move_ids.length < 2 || move_ids.length > 5
+    #   flash[:danger] = "Must have at least 1 and at most 4 moves selected!"
+    #   redirect_to pokemon_edit_moves_path
+    # else
+    #   @pokemon.move_ids = params[:pokemon][:move_ids]
       
-      if @pokemon.save
-        @pokemon.moves_pokemons.each do |moves_pokemon|
-          if moves_pokemon.current_power_points.nil?
-            move = Move.find(moves_pokemon.move_id)
-            moves_pokemon.current_power_points = move.power_points
-            moves_pokemon.save
-          end
-        end
+    #   if @pokemon.save
+    #     @pokemon.moves_pokemons.each do |moves_pokemon|
+    #       if moves_pokemon.current_power_points.nil?
+    #         move = Move.find(moves_pokemon.move_id)
+    #         moves_pokemon.current_power_points = move.power_points
+    #         moves_pokemon.save
+    #       end
+    #     end
   
-        flash[:success] = "Moves were successfully added to the Pokemon."
-        redirect_to pokemon_path(@pokemon)
-      else
-        flash[:danger] = "No moves were selected."
-        render :edit_moves
-      end
-    end
+    #     flash[:success] = "Moves were successfully added to the Pokemon."
+    #     redirect_to pokemon_path(@pokemon)
+    #   else
+    #     flash[:danger] = "No moves were selected."
+    #     render :learn_moves
+    #   end
+    # end
+    redirect_to pokemon_learn_moves_path
   end
 
   # POST /pokemons/heals

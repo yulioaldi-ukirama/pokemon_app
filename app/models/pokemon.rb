@@ -19,4 +19,9 @@ class Pokemon < ApplicationRecord
   has_many :battles_pokemon_2, class_name: 'Battle', foreign_key: 'pokemon_2_id'
 
   belongs_to :species
+
+  # Methods
+  # def gain_experience(points)
+  #   self
+  # end
 end
