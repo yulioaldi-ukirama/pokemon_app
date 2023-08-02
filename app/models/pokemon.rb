@@ -15,13 +15,18 @@ class Pokemon < ApplicationRecord
   belongs_to :element_1, class_name: 'Element', foreign_key: 'element_1_id'
   belongs_to :element_2, class_name: 'Element', foreign_key: 'element_2_id'
 
+  # has_many :battles_pokemon_1, class_name: 'Battle', foreign_key: 'pokemon_1_id', dependent: :destroy
+  # has_many :battles_pokemon_2, class_name: 'Battle', foreign_key: 'pokemon_2_id', dependent: :destroy
   has_many :battles_pokemon_1, class_name: 'Battle', foreign_key: 'pokemon_1_id'
   has_many :battles_pokemon_2, class_name: 'Battle', foreign_key: 'pokemon_2_id'
 
   belongs_to :species
 
+  before_destroy :clear_battles_references
+
   # Methods
-  # def gain_experience(points)
-  #   self
-  # end
+  def clear_battles_references
+    battles_pokemon_1.update_all(pokemon_1_id: 1)
+    battles_pokemon_2.update_all(pokemon_2_id: 1)
+  end
 end
